@@ -78,6 +78,159 @@ public class @Input : IInputActionCollection, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Camera"",
+            ""id"": ""b885c506-be9c-41bb-9c77-2e8065bf6223"",
+            ""actions"": [
+                {
+                    ""name"": ""Pan"",
+                    ""type"": ""Button"",
+                    ""id"": ""ad6072b2-2504-4a45-8c87-76884c2eb261"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Rotate"",
+                    ""type"": ""Button"",
+                    ""id"": ""87b73c27-1d40-4411-839e-6b527d7009f1"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Elevate"",
+                    ""type"": ""Button"",
+                    ""id"": ""96d6bdcc-5c75-4308-9f94-5ecb30e07e2d"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": ""2D Vector"",
+                    ""id"": ""8df7f3e7-b704-4556-8187-ad792bad3062"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Pan"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""a9e138b6-97bd-4d7c-afa8-c280546f7be4"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Pan"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""2414ea78-5598-4b4f-87c9-d6904732bd16"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Pan"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""50bcfce6-3c2a-4db5-bdb3-3859dee42b54"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Pan"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""011366d4-f4f0-4081-aced-0c356f04a409"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Pan"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""1D Axis"",
+                    ""id"": ""ca0e26d0-640d-43fb-be17-20334b68bfc9"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Rotate"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""d0070403-0012-47bb-8141-fc3dc5a9243a"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Rotate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""d9bc7989-17f3-43ad-95db-5e48bd907483"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Rotate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""1D Axis"",
+                    ""id"": ""acffee10-8ede-462a-9999-9afae42c653a"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Elevate"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""d389d574-aa4f-481d-89a5-104b701807c0"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Elevate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""9d5590cb-97a7-4f01-8c4a-4c5a4ec44429"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""Elevate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                }
+            ]
         }
     ],
     ""controlSchemes"": [
@@ -148,6 +301,11 @@ public class @Input : IInputActionCollection, IDisposable
         m_Agent_MousePosition = m_Agent.FindAction("MousePosition", throwIfNotFound: true);
         m_Agent_Execute = m_Agent.FindAction("Execute", throwIfNotFound: true);
         m_Agent_Select = m_Agent.FindAction("Select", throwIfNotFound: true);
+        // Camera
+        m_Camera = asset.FindActionMap("Camera", throwIfNotFound: true);
+        m_Camera_Pan = m_Camera.FindAction("Pan", throwIfNotFound: true);
+        m_Camera_Rotate = m_Camera.FindAction("Rotate", throwIfNotFound: true);
+        m_Camera_Elevate = m_Camera.FindAction("Elevate", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -242,6 +400,55 @@ public class @Input : IInputActionCollection, IDisposable
         }
     }
     public AgentActions @Agent => new AgentActions(this);
+
+    // Camera
+    private readonly InputActionMap m_Camera;
+    private ICameraActions m_CameraActionsCallbackInterface;
+    private readonly InputAction m_Camera_Pan;
+    private readonly InputAction m_Camera_Rotate;
+    private readonly InputAction m_Camera_Elevate;
+    public struct CameraActions
+    {
+        private @Input m_Wrapper;
+        public CameraActions(@Input wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Pan => m_Wrapper.m_Camera_Pan;
+        public InputAction @Rotate => m_Wrapper.m_Camera_Rotate;
+        public InputAction @Elevate => m_Wrapper.m_Camera_Elevate;
+        public InputActionMap Get() { return m_Wrapper.m_Camera; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(CameraActions set) { return set.Get(); }
+        public void SetCallbacks(ICameraActions instance)
+        {
+            if (m_Wrapper.m_CameraActionsCallbackInterface != null)
+            {
+                @Pan.started -= m_Wrapper.m_CameraActionsCallbackInterface.OnPan;
+                @Pan.performed -= m_Wrapper.m_CameraActionsCallbackInterface.OnPan;
+                @Pan.canceled -= m_Wrapper.m_CameraActionsCallbackInterface.OnPan;
+                @Rotate.started -= m_Wrapper.m_CameraActionsCallbackInterface.OnRotate;
+                @Rotate.performed -= m_Wrapper.m_CameraActionsCallbackInterface.OnRotate;
+                @Rotate.canceled -= m_Wrapper.m_CameraActionsCallbackInterface.OnRotate;
+                @Elevate.started -= m_Wrapper.m_CameraActionsCallbackInterface.OnElevate;
+                @Elevate.performed -= m_Wrapper.m_CameraActionsCallbackInterface.OnElevate;
+                @Elevate.canceled -= m_Wrapper.m_CameraActionsCallbackInterface.OnElevate;
+            }
+            m_Wrapper.m_CameraActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @Pan.started += instance.OnPan;
+                @Pan.performed += instance.OnPan;
+                @Pan.canceled += instance.OnPan;
+                @Rotate.started += instance.OnRotate;
+                @Rotate.performed += instance.OnRotate;
+                @Rotate.canceled += instance.OnRotate;
+                @Elevate.started += instance.OnElevate;
+                @Elevate.performed += instance.OnElevate;
+                @Elevate.canceled += instance.OnElevate;
+            }
+        }
+    }
+    public CameraActions @Camera => new CameraActions(this);
     private int m_KeyboardMouseSchemeIndex = -1;
     public InputControlScheme KeyboardMouseScheme
     {
@@ -292,5 +499,11 @@ public class @Input : IInputActionCollection, IDisposable
         void OnMousePosition(InputAction.CallbackContext context);
         void OnExecute(InputAction.CallbackContext context);
         void OnSelect(InputAction.CallbackContext context);
+    }
+    public interface ICameraActions
+    {
+        void OnPan(InputAction.CallbackContext context);
+        void OnRotate(InputAction.CallbackContext context);
+        void OnElevate(InputAction.CallbackContext context);
     }
 }
