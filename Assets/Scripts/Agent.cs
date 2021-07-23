@@ -13,43 +13,9 @@ public class Agent : MonoBehaviour
     Vector3 _destination;
     [SerializeField]
     NavMeshAgent _agent;
-    Input _input;
 
-    private void Awake()
+    public void HandleMove(Vector2 mousePos)
     {
-        _input = new Input();
-    }
-
-    private void OnEnable()
-    {
-        _input.Enable();
-    }
-
-    private void OnDisable()
-    {
-        _input.Disable();
-    }
-
-    void Start()
-    {
-        _input.Agent.MouseClick.performed += _ => MouseClick();
-    }
-
-    void MouseClick()
-    {
-        Vector2 mousePos = _input.Agent.MousePosition.ReadValue<Vector2>();
-        HandleMove(mousePos);
-    }
-
-
-    void Update()
-    {
-        
-    }
-
-    private void HandleMove(Vector2 mousePos)
-    {
-        //cast ray from mouse position
         Ray clickRay = _camera.ScreenPointToRay(mousePos);
         RaycastHit hitInfo;
         if (Physics.Raycast(clickRay, out hitInfo))
@@ -60,8 +26,6 @@ public class Agent : MonoBehaviour
             _destination = new Vector3(x, y, z);
             _agent.destination = _destination;
         }
-        //round to nearest integer coordinate
-        //assign agent destination
     }
 
 

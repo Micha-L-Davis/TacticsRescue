@@ -14,9 +14,17 @@
                     "interactions": ""
                 },
                 {
-                    "name": "MouseClick",
+                    "name": "Execute",
                     "type": "Button",
                     "id": "0443841c-08ff-48e9-9eb8-bcf0bfa388db",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Select",
+                    "type": "Button",
+                    "id": "c7a473fe-d501-471f-99d0-3e158003e0b7",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
@@ -37,11 +45,22 @@
                 {
                     "name": "",
                     "id": "5c2f3fce-c5a4-489f-8cd3-b4c3619a1744",
+                    "path": "<Pointer>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse;Touch",
+                    "action": "Execute",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "9b6738c3-f01d-48bf-88a3-a0889dac82e0",
                     "path": "<Pointer>/press",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse;Touch",
-                    "action": "MouseClick",
+                    "action": "Select",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

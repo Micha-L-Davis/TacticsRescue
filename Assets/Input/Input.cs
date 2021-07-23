@@ -27,9 +27,17 @@ public class @Input : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""MouseClick"",
+                    ""name"": ""Execute"",
                     ""type"": ""Button"",
                     ""id"": ""0443841c-08ff-48e9-9eb8-bcf0bfa388db"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Select"",
+                    ""type"": ""Button"",
+                    ""id"": ""c7a473fe-d501-471f-99d0-3e158003e0b7"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
@@ -50,11 +58,22 @@ public class @Input : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""5c2f3fce-c5a4-489f-8cd3-b4c3619a1744"",
+                    ""path"": ""<Pointer>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse;Touch"",
+                    ""action"": ""Execute"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9b6738c3-f01d-48bf-88a3-a0889dac82e0"",
                     ""path"": ""<Pointer>/press"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse;Touch"",
-                    ""action"": ""MouseClick"",
+                    ""action"": ""Select"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -127,7 +146,8 @@ public class @Input : IInputActionCollection, IDisposable
         // Agent
         m_Agent = asset.FindActionMap("Agent", throwIfNotFound: true);
         m_Agent_MousePosition = m_Agent.FindAction("MousePosition", throwIfNotFound: true);
-        m_Agent_MouseClick = m_Agent.FindAction("MouseClick", throwIfNotFound: true);
+        m_Agent_Execute = m_Agent.FindAction("Execute", throwIfNotFound: true);
+        m_Agent_Select = m_Agent.FindAction("Select", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -178,13 +198,15 @@ public class @Input : IInputActionCollection, IDisposable
     private readonly InputActionMap m_Agent;
     private IAgentActions m_AgentActionsCallbackInterface;
     private readonly InputAction m_Agent_MousePosition;
-    private readonly InputAction m_Agent_MouseClick;
+    private readonly InputAction m_Agent_Execute;
+    private readonly InputAction m_Agent_Select;
     public struct AgentActions
     {
         private @Input m_Wrapper;
         public AgentActions(@Input wrapper) { m_Wrapper = wrapper; }
         public InputAction @MousePosition => m_Wrapper.m_Agent_MousePosition;
-        public InputAction @MouseClick => m_Wrapper.m_Agent_MouseClick;
+        public InputAction @Execute => m_Wrapper.m_Agent_Execute;
+        public InputAction @Select => m_Wrapper.m_Agent_Select;
         public InputActionMap Get() { return m_Wrapper.m_Agent; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -197,9 +219,12 @@ public class @Input : IInputActionCollection, IDisposable
                 @MousePosition.started -= m_Wrapper.m_AgentActionsCallbackInterface.OnMousePosition;
                 @MousePosition.performed -= m_Wrapper.m_AgentActionsCallbackInterface.OnMousePosition;
                 @MousePosition.canceled -= m_Wrapper.m_AgentActionsCallbackInterface.OnMousePosition;
-                @MouseClick.started -= m_Wrapper.m_AgentActionsCallbackInterface.OnMouseClick;
-                @MouseClick.performed -= m_Wrapper.m_AgentActionsCallbackInterface.OnMouseClick;
-                @MouseClick.canceled -= m_Wrapper.m_AgentActionsCallbackInterface.OnMouseClick;
+                @Execute.started -= m_Wrapper.m_AgentActionsCallbackInterface.OnExecute;
+                @Execute.performed -= m_Wrapper.m_AgentActionsCallbackInterface.OnExecute;
+                @Execute.canceled -= m_Wrapper.m_AgentActionsCallbackInterface.OnExecute;
+                @Select.started -= m_Wrapper.m_AgentActionsCallbackInterface.OnSelect;
+                @Select.performed -= m_Wrapper.m_AgentActionsCallbackInterface.OnSelect;
+                @Select.canceled -= m_Wrapper.m_AgentActionsCallbackInterface.OnSelect;
             }
             m_Wrapper.m_AgentActionsCallbackInterface = instance;
             if (instance != null)
@@ -207,9 +232,12 @@ public class @Input : IInputActionCollection, IDisposable
                 @MousePosition.started += instance.OnMousePosition;
                 @MousePosition.performed += instance.OnMousePosition;
                 @MousePosition.canceled += instance.OnMousePosition;
-                @MouseClick.started += instance.OnMouseClick;
-                @MouseClick.performed += instance.OnMouseClick;
-                @MouseClick.canceled += instance.OnMouseClick;
+                @Execute.started += instance.OnExecute;
+                @Execute.performed += instance.OnExecute;
+                @Execute.canceled += instance.OnExecute;
+                @Select.started += instance.OnSelect;
+                @Select.performed += instance.OnSelect;
+                @Select.canceled += instance.OnSelect;
             }
         }
     }
@@ -262,6 +290,7 @@ public class @Input : IInputActionCollection, IDisposable
     public interface IAgentActions
     {
         void OnMousePosition(InputAction.CallbackContext context);
-        void OnMouseClick(InputAction.CallbackContext context);
+        void OnExecute(InputAction.CallbackContext context);
+        void OnSelect(InputAction.CallbackContext context);
     }
 }
