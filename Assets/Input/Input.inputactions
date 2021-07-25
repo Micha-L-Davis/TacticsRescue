@@ -80,7 +80,7 @@
                 },
                 {
                     "name": "Rotate",
-                    "type": "Button",
+                    "type": "Value",
                     "id": "87b73c27-1d40-4411-839e-6b527d7009f1",
                     "expectedControlType": "Button",
                     "processors": "",
@@ -91,6 +91,14 @@
                     "type": "Button",
                     "id": "96d6bdcc-5c75-4308-9f94-5ecb30e07e2d",
                     "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Zoom",
+                    "type": "PassThrough",
+                    "id": "b2055809-92bd-4008-9fad-08fc6934f7e3",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": ""
                 }
@@ -216,6 +224,17 @@
                     "action": "Elevate",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "d7563dbe-94ae-4774-8220-c0f094b27e5d",
+                    "path": "<Mouse>/scroll/y",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Zoom",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }

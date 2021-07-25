@@ -93,7 +93,7 @@ public class @Input : IInputActionCollection, IDisposable
                 },
                 {
                     ""name"": ""Rotate"",
-                    ""type"": ""Button"",
+                    ""type"": ""Value"",
                     ""id"": ""87b73c27-1d40-4411-839e-6b527d7009f1"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
@@ -104,6 +104,14 @@ public class @Input : IInputActionCollection, IDisposable
                     ""type"": ""Button"",
                     ""id"": ""96d6bdcc-5c75-4308-9f94-5ecb30e07e2d"",
                     ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Zoom"",
+                    ""type"": ""PassThrough"",
+                    ""id"": ""b2055809-92bd-4008-9fad-08fc6934f7e3"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """"
                 }
@@ -229,6 +237,17 @@ public class @Input : IInputActionCollection, IDisposable
                     ""action"": ""Elevate"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d7563dbe-94ae-4774-8220-c0f094b27e5d"",
+                    ""path"": ""<Mouse>/scroll/y"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Zoom"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -306,6 +325,7 @@ public class @Input : IInputActionCollection, IDisposable
         m_Camera_Pan = m_Camera.FindAction("Pan", throwIfNotFound: true);
         m_Camera_Rotate = m_Camera.FindAction("Rotate", throwIfNotFound: true);
         m_Camera_Elevate = m_Camera.FindAction("Elevate", throwIfNotFound: true);
+        m_Camera_Zoom = m_Camera.FindAction("Zoom", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -407,6 +427,7 @@ public class @Input : IInputActionCollection, IDisposable
     private readonly InputAction m_Camera_Pan;
     private readonly InputAction m_Camera_Rotate;
     private readonly InputAction m_Camera_Elevate;
+    private readonly InputAction m_Camera_Zoom;
     public struct CameraActions
     {
         private @Input m_Wrapper;
@@ -414,6 +435,7 @@ public class @Input : IInputActionCollection, IDisposable
         public InputAction @Pan => m_Wrapper.m_Camera_Pan;
         public InputAction @Rotate => m_Wrapper.m_Camera_Rotate;
         public InputAction @Elevate => m_Wrapper.m_Camera_Elevate;
+        public InputAction @Zoom => m_Wrapper.m_Camera_Zoom;
         public InputActionMap Get() { return m_Wrapper.m_Camera; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -432,6 +454,9 @@ public class @Input : IInputActionCollection, IDisposable
                 @Elevate.started -= m_Wrapper.m_CameraActionsCallbackInterface.OnElevate;
                 @Elevate.performed -= m_Wrapper.m_CameraActionsCallbackInterface.OnElevate;
                 @Elevate.canceled -= m_Wrapper.m_CameraActionsCallbackInterface.OnElevate;
+                @Zoom.started -= m_Wrapper.m_CameraActionsCallbackInterface.OnZoom;
+                @Zoom.performed -= m_Wrapper.m_CameraActionsCallbackInterface.OnZoom;
+                @Zoom.canceled -= m_Wrapper.m_CameraActionsCallbackInterface.OnZoom;
             }
             m_Wrapper.m_CameraActionsCallbackInterface = instance;
             if (instance != null)
@@ -445,6 +470,9 @@ public class @Input : IInputActionCollection, IDisposable
                 @Elevate.started += instance.OnElevate;
                 @Elevate.performed += instance.OnElevate;
                 @Elevate.canceled += instance.OnElevate;
+                @Zoom.started += instance.OnZoom;
+                @Zoom.performed += instance.OnZoom;
+                @Zoom.canceled += instance.OnZoom;
             }
         }
     }
@@ -505,5 +533,6 @@ public class @Input : IInputActionCollection, IDisposable
         void OnPan(InputAction.CallbackContext context);
         void OnRotate(InputAction.CallbackContext context);
         void OnElevate(InputAction.CallbackContext context);
+        void OnZoom(InputAction.CallbackContext context);
     }
 }
