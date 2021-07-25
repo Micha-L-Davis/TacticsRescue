@@ -35,7 +35,21 @@ public class SelectionManager : MonoBehaviour
     {
         Debug.Log("Left Click performed");
         Vector2 mousePos = _input.Agent.MousePosition.ReadValue<Vector2>();
-        HandleSelection(mousePos);
+        Ray clickRay = _camera.ScreenPointToRay(mousePos);
+        RaycastHit hitInfo;
+        if (Physics.Raycast(clickRay, out hitInfo))
+        {
+            Debug.Log(hitInfo.transform.name + " hit by ray");
+            Agent agent = hitInfo.transform.gameObject.GetComponent<Agent>();
+            if (agent != null)
+            {
+                _selectedAgent = agent;
+                Debug.Log(_selectedAgent.name + " selected.");
+                return;
+            }
+        }
+        Debug.Log("Selecting null");
+        _selectedAgent = null;
     }
 
     void Execute()
@@ -46,26 +60,6 @@ public class SelectionManager : MonoBehaviour
             Debug.Log(_selectedAgent.name + " executing movement.");
             Vector2 mousePos = _input.Agent.MousePosition.ReadValue<Vector2>();
             _selectedAgent.HandleMove(mousePos);
-        }
-    }
-
-    private void HandleSelection(Vector2 mousePos)
-    {
-        Ray clickRay = _camera.ScreenPointToRay(mousePos);
-        RaycastHit hitInfo;
-        if (Physics.Raycast(clickRay, out hitInfo))
-        {
-            Agent agent = hitInfo.transform.gameObject.GetComponent<Agent>();
-            if (agent != null)
-            {
-                _selectedAgent = agent;
-                Debug.Log(_selectedAgent.name + " selected.");
-            }
-            else
-            {
-                Debug.Log("Selecting null");
-                _selectedAgent = null;
-            }
         }
     }
 }

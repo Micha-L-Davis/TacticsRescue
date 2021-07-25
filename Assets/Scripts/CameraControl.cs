@@ -9,6 +9,8 @@ public class CameraControl : MonoBehaviour
     [SerializeField]
     float _speed;
     Vector2 _panVector;
+    [SerializeField]
+    Camera _camera;
 
     private void Awake()
     {
@@ -27,19 +29,28 @@ public class CameraControl : MonoBehaviour
 
     private void Start()
     {
+        SubscribeToInputEvents();
+    }
+
+    private void SubscribeToInputEvents()
+    {
+        _input.Camera.Pan.started += context => PanCamera(context);
         _input.Camera.Pan.performed += context => PanCamera(context);
+        _input.Camera.Pan.canceled += context => PanCamera(context);
         _input.Camera.Rotate.performed += context => RotateCamera(context);
         _input.Camera.Elevate.performed += context => ElevateCamera(context);
     }
 
     void Update()
     {
-        transform.position = new Vector3(transform.position.x + _panVector.x, transform.position.y, transform.position.z + _panVector.y) * _speed * Time.deltaTime;
+        transform.Translate(Vector3.right * _panVector.x * _speed * Time.deltaTime, Space.Self);
+        transform.Translate(Vector3.forward * _panVector.y * _speed * Time.deltaTime, Space.Self);
     }
 
     void PanCamera(InputAction.CallbackContext context)
     {
         _panVector = context.ReadValue<Vector2>();
+        Debug.Log("Pan vector = " + _panVector);
     }
 
     void RotateCamera(InputAction.CallbackContext context)
