@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.AI;
 using UnityEngine.InputSystem.Controls;
+using System;
 
 [RequireComponent(typeof(NavMeshAgent))]
 public class Agent : MonoBehaviour
@@ -11,8 +12,12 @@ public class Agent : MonoBehaviour
     [SerializeField]
     Camera _camera;
     Vector3 _destination;
-    [SerializeField]
     NavMeshAgent _agent;
+
+    private void Start()
+    {
+        _agent = GetComponent<NavMeshAgent>();
+    }
 
     public void HandleMove(Vector2 mousePos)
     {
