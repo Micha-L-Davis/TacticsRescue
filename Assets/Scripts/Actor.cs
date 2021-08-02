@@ -7,12 +7,13 @@ using UnityEngine.InputSystem.Controls;
 using System;
 
 [RequireComponent(typeof(NavMeshAgent))]
-public abstract class Agent : MonoBehaviour
+public abstract class Actor : MonoBehaviour
 {
     [SerializeField]
     Camera _camera;
     protected Vector3 _destination;
     protected NavMeshAgent _agent;
+    public Sprite portrait;
 
     protected virtual void Start()
     {

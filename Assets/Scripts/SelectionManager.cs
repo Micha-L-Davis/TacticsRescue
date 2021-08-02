@@ -3,16 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class SelectionManager : MonoBehaviour
+public class SelectionManager : Singleton<SelectionManager>
 {
+    protected SelectionManager() { }
+
     Feat _selectedFeat;
-    [SerializeField]
-    UIManager _uiManager;
+    //[SerializeField]
+    //UIManager _uiManager;
     [SerializeField]
     EventSystem _eventSystem;
-
-    [SerializeField]
-    LinkedList<Agent> initiativeOrder = new LinkedList<Agent>();
 
     public Hero SelectedHero { get; private set; }
 
@@ -37,12 +36,12 @@ public class SelectionManager : MonoBehaviour
 
     private void Start()
     {
-        _input.Agent.Select.performed += _ => SelectAgent();
+        _input.Agent.Select.performed += _ => SelectHero();
         _input.Agent.Execute.performed += _ => Execute();
 
-        _uiManager.OnMoveSelect += SelectMoveFeat;
-        _uiManager.OnBreakSelect += SelectBreakFeat;
-        _uiManager.OnSaveSelect += SelectSaveFeat;
+        UIManager.Instance.OnMoveSelect += SelectMoveFeat;
+        UIManager.Instance.OnBreakSelect += SelectBreakFeat;
+        UIManager.Instance.OnSaveSelect += SelectSaveFeat;
     }
 
     //InitiativeRoutine
@@ -54,7 +53,7 @@ public class SelectionManager : MonoBehaviour
     //...
 
 
-    void SelectAgent()
+    void SelectHero()
     {
         if (_eventSystem.IsPointerOverGameObject())
         {
@@ -72,7 +71,7 @@ public class SelectionManager : MonoBehaviour
                 Hero hero = hitInfo.transform.gameObject.GetComponent<Hero>();
                 if (hero != null)
                 {
-                    //highlight agent with shader
+                    //highlight actor with shader
                     //reveal UI buttons
                     SelectedHero = hero;
                     Debug.Log(SelectedHero.name + " selected.");

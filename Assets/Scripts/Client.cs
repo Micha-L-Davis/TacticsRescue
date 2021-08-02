@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Client : Agent
+public class Client : Actor
 {
 
     public override int RollInitiative()

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Hero : Agent
+public class Hero : Actor
 {
     List<Feat> _feats;
     Feat _move;
@@ -110,13 +110,13 @@ public class Hero : Agent
     }
 
 
-    enum Archetype
-    {
-        Mental,
-        Physical
-    };
-    [SerializeField]
-    Archetype _archetype;
+    //enum Archetype
+    //{
+    //    Mental,
+    //    Physical
+    //};
+    //[SerializeField]
+    //Archetype _archetype;
 
     protected override void Start()
     {
@@ -150,6 +150,5 @@ public class Hero : Agent
         roll += InitiativeBonus;
         Debug.Log(HeroName + " rolls a " + roll + " for initiative.");
         return roll;
-        //pass roll and unit name to GameManager Initiative Dictionary Method
     }
 }

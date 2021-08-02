@@ -1,19 +1,20 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
-public class GameManager : MonoBehaviour
+public class GameManager : Singleton<GameManager>
 {
+    protected GameManager() { }
+
     //turn change event notifications go here
-    //public static Action OnRoundStart;
     public static Func<int> OnRoundStart;
+    //public static Action OnTurnChange;
 
-
-    public static Action OnTurnChange;
-
-    public Dictionary<GameObject, int> initiativeDictionary = new Dictionary<GameObject, int>();
-
+    Dictionary<Actor, int> _initiativeDictionary = new Dictionary<Actor, int>();
+    [SerializeField]
+    LinkedList<KeyValuePair<Actor, int>> _initiativeOrder = new LinkedList<KeyValuePair<Actor, int>>();
     public bool levelComplete;
 
 
@@ -22,20 +23,25 @@ public class GameManager : MonoBehaviour
     //{
     //    while (!levelComplete)
     //    {
-    private void Start()
+    public void RoundStart()
     {
         if (OnRoundStart != null)
         {
             foreach (Func<int> func in OnRoundStart.GetInvocationList())
             {
-                Agent agent = (Agent)func.Target;
+                Actor actor = (Actor)func.Target;
                 int init = func.Invoke();
-                initiativeDictionary.Add(agent.gameObject, init);
+                _initiativeDictionary.Add(actor, init);
             }
-            foreach (var item in initiativeDictionary)
+            foreach (KeyValuePair<Actor, int> actor in _initiativeDictionary.OrderBy(init => init.Value))
             {
-                Debug.Log(item.Key + " " + item.Value);
+                Debug.Log("Actor: " + actor.Key.name + "Intitiative: " + actor.Value);
+                _initiativeOrder.AddFirst(actor);
+
+
             }
+            //update the UI image for the last image in the on-screen initiative roster
+            UIManager.Instance.UpdateInitiativeRoster(_initiativeDictionary);
         }
         else
         {
@@ -45,4 +51,6 @@ public class GameManager : MonoBehaviour
     }
     //  yield on a bool checking to see if the initiative round is complete.
     //}
+
+
 }

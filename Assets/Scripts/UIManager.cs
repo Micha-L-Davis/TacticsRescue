@@ -1,12 +1,35 @@
 using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class UIManager : MonoBehaviour
+public class UIManager : Singleton<UIManager>
 {
+    protected UIManager() {}
+
     public Action OnMoveSelect;
     public Action OnBreakSelect;
     public Action OnSaveSelect;
+    [SerializeField]
+    List<Image> _initiativeRoster = new List<Image>();
+    [SerializeField]
+    List<TMP_Text> _initiativeText = new List<TMP_Text>();
+
+    public void UpdateInitiativeRoster(Dictionary<Actor, int> initDict)
+    {
+        int i = _initiativeRoster.Count -1;
+        foreach (KeyValuePair<Actor, int> actor in initDict)
+        {
+            if (i < 0)
+            {
+                break;
+            }
+            _initiativeRoster[i].sprite = actor.Key.portrait;
+            _initiativeText[i].text = "" + actor.Value;
+            i--;
+        }
+    }
 
     public void MoveFeatButton()
     {
