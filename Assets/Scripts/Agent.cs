@@ -7,7 +7,7 @@ using UnityEngine.InputSystem.Controls;
 using System;
 
 [RequireComponent(typeof(NavMeshAgent))]
-public class Agent : MonoBehaviour
+public abstract class Agent : MonoBehaviour
 {
     [SerializeField]
     Camera _camera;
@@ -21,6 +21,8 @@ public class Agent : MonoBehaviour
         {
             Debug.LogError("NavMeshAgent is NULL!");
         }
+
+        GameManager.OnRoundStart += RollInitiative;
     }
 
     public void HandleMove(Vector2 mousePos)
@@ -39,5 +41,6 @@ public class Agent : MonoBehaviour
         }
     }
 
+    public abstract int RollInitiative();
 
 }

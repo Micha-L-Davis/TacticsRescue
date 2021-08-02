@@ -11,6 +11,9 @@ public class SelectionManager : MonoBehaviour
     [SerializeField]
     EventSystem _eventSystem;
 
+    [SerializeField]
+    LinkedList<Agent> initiativeOrder = new LinkedList<Agent>();
+
     public Hero SelectedHero { get; private set; }
 
     Input _input;
@@ -41,6 +44,15 @@ public class SelectionManager : MonoBehaviour
         _uiManager.OnBreakSelect += SelectBreakFeat;
         _uiManager.OnSaveSelect += SelectSaveFeat;
     }
+
+    //InitiativeRoutine
+    //while (!levelComplete)
+    //...select first initiative agent
+    //...SelectedAgent.BeginTurn();
+    //...yield return CheckForEndOfTurn(); //a bool function that triggers when agent ends their turn
+    //...calculate new initiative and insert into next turn's list
+    //...
+
 
     void SelectAgent()
     {
