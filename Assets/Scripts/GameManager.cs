@@ -17,6 +17,8 @@ public class GameManager : Singleton<GameManager>
     public bool levelComplete;
     int currentRound;
     public int CurrentRound { get; }
+    
+
 
     private void Start()
     {
@@ -28,6 +30,7 @@ public class GameManager : Singleton<GameManager>
         while (!levelComplete)
         {
             RoundStart();
+            yield return DeclareActions();
             yield return new WaitWhile(RoundComplete);
 
         }
@@ -53,13 +56,62 @@ public class GameManager : Singleton<GameManager>
             _initiativeCeiling = _initiativeOrder.First.Value.Value;
             _initiativeFloor = _initiativeOrder.Last.Value.Value;
             _initiativeIndex = _initiativeCeiling;
-            SelectionManager.Instance.SelectActor(_initiativeOrder.First.Value.Key);
-
         }
         else
         {
             Debug.Log("OnRoundStart has no subscribers");
         }
+
+    }
+
+    IEnumerator DeclareActions()
+    {
+        //foreach actor in play:
+            //select the last initiative member
+            SelectionManager.Instance.SelectActor(_initiativeOrder.Last.Value.Key);
+            //create new instance of Turn class
+            //if actor.IsHero
+            //... yield on SelectAction(Feat[], Target[])
+            //... for loop on length of Feat[]
+            //... ... use Turn.Action[] constructor with (feat[i], target[i])
+            //else
+            //... yield on AIDeclareAction(Feat, Target)
+            //... use Turn.Action[] constructor with (feat, target) 
+            //Add Turn to Round.First
+            //move last initiative member to front of line
+            var current = _initiativeOrder.Last;
+            _initiativeOrder.RemoveLast();
+            _initiativeOrder.AddFirst(current);
+
+        yield break;//placeholder
+    }
+
+    IEnumerator ProcessRound()
+    {
+        //var currentTurn = Round.First
+        //var currentAction = currentTurn.action.first
+
+        //while Round.Count > 0
+        //yield return ExecuteAction(currentAction)
+        
+        //currentAction = currentAction.Next
+        //if currentAction != null
+            //currentTurn.action.Remove(currentAction.Previous)
+        //else
+            //currentTurn.action.Clear()
+            //currentTurn = currentTurn.Next
+            //if currentTurn != null
+                //Round.Remove(currentTurn.Previous)
+            //else
+                //Round.Clear();
+
+        
+
+        yield break; 
+    }
+
+    void AIDeclareAction()
+    {
 
     }
 

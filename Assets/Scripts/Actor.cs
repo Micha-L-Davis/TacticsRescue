@@ -14,6 +14,9 @@ public abstract class Actor : MonoBehaviour
     protected Vector3 _destination;
     protected NavMeshAgent _agent;
     public Sprite portrait;
+    public Hero hero;
+    public Client client;
+    public bool IsHero { get; private set; }
 
     protected virtual void Start()
     {
@@ -24,6 +27,12 @@ public abstract class Actor : MonoBehaviour
         }
 
         GameManager.OnRoundStart += RollInitiative;
+        TryGetComponent<Hero>(out hero);
+        if (hero != null)
+        {
+            IsHero = true;
+        }
+        TryGetComponent<Client>(out client);
     }
 
     public void HandleMove(Vector2 mousePos)

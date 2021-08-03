@@ -13,8 +13,7 @@ public class SelectionManager : Singleton<SelectionManager>
     [SerializeField]
     EventSystem _eventSystem;
 
-    public Hero SelectedHero { get; private set; }
-    public Client SelectedClient { get; private set; }
+    public Actor SelectedActor { get; private set; }
 
     Input _input;
     [SerializeField]
@@ -45,33 +44,20 @@ public class SelectionManager : Singleton<SelectionManager>
         UIManager.Instance.OnSaveSelect += SelectSaveFeat;
     }
 
-    //InitiativeRoutine
-    //while (!levelComplete)
-    //...select first initiative agent
-    //...SelectedAgent.BeginTurn();
-    //...yield return CheckForEndOfTurn(); //a bool function that triggers when agent ends their turn
-    //...calculate new initiative and insert into next turn's list
-    //...
+    //old idea
+    //////InitiativeRoutine
+    //////while (!levelComplete)
+    //////...select first initiative agent
+    //////...SelectedAgent.BeginTurn();
+    //////...yield return CheckForEndOfTurn(); //a bool function that triggers when agent ends their turn
+    //////...calculate new initiative and insert into next turn's list
+    //////...
 
     public void SelectActor(Actor actor)
     {
-        SelectedHero = (actor.GetComponent<Hero>()) ? (Hero)actor : null;
-        SelectedClient = (actor.GetComponent<Client>()) ? (Client)actor : null;
-        StartCoroutine(ProcessTurnRoutine(actor));
-    }
-
-    IEnumerator ProcessTurnRoutine(Actor actor)
-    {
-        while (SelectedHero != null)
-        {
-            //enable player input
-            yield break;
-        }
-        while (SelectedClient != null)
-        {
-            //process AI behavior
-            yield break;
-        }
+        SelectedActor = actor;
+        //highlight actor with shader
+        //reveal UI buttons
     }
 
     void SelectHero()
@@ -92,37 +78,36 @@ public class SelectionManager : Singleton<SelectionManager>
                 Hero hero = hitInfo.transform.gameObject.GetComponent<Hero>();
                 if (hero != null)
                 {
-                    //highlight actor with shader
-                    //reveal UI buttons
-                    SelectedHero = hero;
-                    Debug.Log(SelectedHero.name + " selected.");
+
+                    SelectedActor = hero;
+                    Debug.Log(SelectedActor.name + " selected.");
                     return;
                 }
             }
             Debug.Log("Selecting null");
-            SelectedHero = null;
+            SelectedActor = null;
         }
 
     }
 
     void SelectMoveFeat()
     {
-        _selectedFeat = SelectedHero.Move;
+        _selectedFeat = SelectedActor.hero.Move;
     }
     void SelectBreakFeat()
     {
-        _selectedFeat = SelectedHero.Break;
+        _selectedFeat = SelectedActor.hero.Break;
     }
     void SelectSaveFeat()
     {
-        _selectedFeat = SelectedHero.Save;
+        _selectedFeat = SelectedActor.hero.Save;
     }
 
     void Execute()
     {
         Debug.Log("Right Click performed");
         Vector2 mousePos = _input.Agent.MousePosition.ReadValue<Vector2>();
-        if (SelectedHero != null)
+        if (SelectedActor != null)
         {
             Ray clickRay = _camera.ScreenPointToRay(mousePos);
             RaycastHit hitInfo;
@@ -130,7 +115,7 @@ public class SelectionManager : Singleton<SelectionManager>
             {
                 GameObject target = hitInfo.transform.gameObject;
                 Debug.Log("Target object is " + target.name);
-                float distance = Vector3.Distance(target.transform.position, SelectedHero.transform.position);
+                float distance = Vector3.Distance(target.transform.position, SelectedActor.transform.position);
                 Debug.Log("Distance to target is " + distance);
                 if (_selectedFeat != null && _selectedFeat.Range > distance)
                 {
@@ -146,7 +131,7 @@ public class SelectionManager : Singleton<SelectionManager>
                                 //float x = Mathf.RoundToInt(hitInfo.point.x);
                                 //float y = Mathf.RoundToInt(hitInfo.point.y);
                                 //float z = Mathf.RoundToInt(hitInfo.point.z);
-                                movable.ExecuteMove(2, SelectedHero);
+                                movable.ExecuteMove(2, (Hero)SelectedActor);
                             }
                             else
                             {
@@ -171,8 +156,8 @@ public class SelectionManager : Singleton<SelectionManager>
                 }
                 else if (_selectedFeat == null)
                 {
-                    Debug.Log(SelectedHero.name + " executing movement.");
-                    SelectedHero.HandleMove(mousePos);
+                    Debug.Log(SelectedActor.name + " executing movement.");
+                    SelectedActor.HandleMove(mousePos);
                 }
             }
         }

@@ -17,7 +17,9 @@ public class Feat
     {
         Move,
         Break,
-        Save
+        Save,
+        Panic,
+        Loot
     };
     public ActionType Action { get; private set; }
 
