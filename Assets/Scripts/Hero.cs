@@ -123,6 +123,7 @@ public class Hero : Actor
         base.Start();
 
         //mental character type constructors
+        //get these tied to attributes rather than magic numbers
         _feats = new List<Feat>();
         _move = new Feat(3, Feat.ActionType.Move);
         _feats.Add(_move);

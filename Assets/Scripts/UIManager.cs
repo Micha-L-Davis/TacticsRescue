@@ -16,19 +16,30 @@ public class UIManager : Singleton<UIManager>
     [SerializeField]
     List<TMP_Text> _initiativeText = new List<TMP_Text>();
 
-    public void UpdateInitiativeRoster(Dictionary<Actor, int> initDict)
+    public void UpdateInitiativeRoster(LinkedList<KeyValuePair<Actor, int>> initList)
     {
-        int i = _initiativeRoster.Count -1;
-        foreach (KeyValuePair<Actor, int> actor in initDict)
+        for (int i = _initiativeRoster.Count-1; i >= 0; i--)
         {
-            if (i < 0)
-            {
-                break;
-            }
-            _initiativeRoster[i].sprite = actor.Key.portrait;
-            _initiativeText[i].text = "" + actor.Value;
-            i--;
+            var current = initList.Last;
+            _initiativeRoster[i].sprite = current.Value.Key.portrait;
+            _initiativeText[i].text = "" + current.Value.Value;
+            initList.RemoveLast();
+            initList.AddFirst(current);
         }
+
+
+
+        //int i = _initiativeRoster.Count -1;               
+        //foreach (KeyValuePair<Actor, int> actor in initList)
+        //{
+        //    if (i < 0)
+        //    {
+        //        break;
+        //    }
+        //    _initiativeRoster[i].sprite = actor.Key.portrait;
+        //    _initiativeText[i].text = "" + actor.Value;
+        //    i--;
+        //}
     }
 
     public void MoveFeatButton()
@@ -47,4 +58,8 @@ public class UIManager : Singleton<UIManager>
         OnSaveSelect?.Invoke();
     }
 
+    public void EndTurnButton()
+    {
+        GameManager.Instance.AdvanceTurn();
+    }
 }

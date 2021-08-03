@@ -14,6 +14,7 @@ public class SelectionManager : Singleton<SelectionManager>
     EventSystem _eventSystem;
 
     public Hero SelectedHero { get; private set; }
+    public Client SelectedClient { get; private set; }
 
     Input _input;
     [SerializeField]
@@ -52,6 +53,26 @@ public class SelectionManager : Singleton<SelectionManager>
     //...calculate new initiative and insert into next turn's list
     //...
 
+    public void SelectActor(Actor actor)
+    {
+        SelectedHero = (actor.GetComponent<Hero>()) ? (Hero)actor : null;
+        SelectedClient = (actor.GetComponent<Client>()) ? (Client)actor : null;
+        StartCoroutine(ProcessTurnRoutine(actor));
+    }
+
+    IEnumerator ProcessTurnRoutine(Actor actor)
+    {
+        while (SelectedHero != null)
+        {
+            //enable player input
+            yield break;
+        }
+        while (SelectedClient != null)
+        {
+            //process AI behavior
+            yield break;
+        }
+    }
 
     void SelectHero()
     {
