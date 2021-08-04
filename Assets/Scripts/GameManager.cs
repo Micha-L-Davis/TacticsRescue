@@ -17,12 +17,33 @@ public class GameManager : Singleton<GameManager>
     public bool levelComplete;
     int currentRound;
     public int CurrentRound { get; }
-    
+    List<Actor> _actors = new List<Actor>();
+    public bool PlayerTurn { get; private set; }
+    Turn _thisTurn;
+    int _actionCount = 1;
+    LinkedList<Turn> Round = new LinkedList<Turn>();
 
 
     private void Start()
     {
-        RoundStart();
+        RallyActors();
+        StartCoroutine(RoundRoutine());
+    }
+
+    void RallyActors()
+    {
+        GameObject[] rallyCall = GameObject.FindGameObjectsWithTag("Actor");
+        foreach (var go in rallyCall)
+        {
+            Actor actor = go.GetComponent<Actor>();
+            if (actor == null)
+            {
+                Debug.LogError("GameObject " + go.name + " is missing its actor component, or has been improperly assigned an Actor tag");
+            }
+            _actors.Add(actor);
+        }
+
+        Debug.Log(_actors.Count + " actors rallied.");
     }
 
     IEnumerator RoundRoutine()
@@ -66,24 +87,53 @@ public class GameManager : Singleton<GameManager>
 
     IEnumerator DeclareActions()
     {
-        //foreach actor in play:
+        //for loop on number of actors in play
+        for (int i = 0; i < _actors.Count; i++)
+        {
             //select the last initiative member
             SelectionManager.Instance.SelectActor(_initiativeOrder.Last.Value.Key);
-            //create new instance of Turn class
+            Actor actor = SelectionManager.Instance.SelectedActor;
             //if actor.IsHero
-            //... yield on SelectAction(Feat[], Target[])
-            //... for loop on length of Feat[]
-            //... ... use Turn.Action[] constructor with (feat[i], target[i])
-            //else
-            //... yield on AIDeclareAction(Feat, Target)
-            //... use Turn.Action[] constructor with (feat, target) 
+            _thisTurn = new Turn();
+            if (actor.IsHero)
+            {
+                PlayerTurn = true;
+                Debug.Log("Hero" + actor.name + " is chosing an action");
+                yield return new WaitUntil(ActionSelected);
+            }
+            else
+            {
+                yield return new WaitForSeconds(1.5f);
+                Debug.Log("Client " + actor.name + " chooses to panic!");
+                Feat feat = new Feat(0, Feat.ActionType.Panic);
+                LogFeat(feat);
+            }
             //Add Turn to Round.First
+            Round.AddFirst(_thisTurn);
             //move last initiative member to front of line
             var current = _initiativeOrder.Last;
             _initiativeOrder.RemoveLast();
             _initiativeOrder.AddFirst(current);
+        }
+        foreach (var item in Round)
+        {
+            Debug.Log(item.actionList.ToString());
+        }
+    }
 
-        yield break;//placeholder
+    bool ActionSelected()
+    {
+        return _thisTurn.actionList.Count == _actionCount;
+    }
+
+    public void LogFeat(object target, Feat feat = null)
+    {
+        _thisTurn.AddAction(target, feat);
+    }
+
+    public void LogFeat(Feat feat, object target = null)
+    {
+        _thisTurn.AddAction(feat, target);
     }
 
     IEnumerator ProcessRound()

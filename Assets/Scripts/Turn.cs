@@ -6,17 +6,24 @@ public class Turn
 {
     public object[] action = new object[2];
     public List<object[]> actionList = new List<object[]>();
-    public Turn(Feat feat, Vector3 location)
+    public void AddAction(object target, Feat feat = null)
     {
         action[0] = feat;
-        action[1] = location;
+        action[1] = target;
+        actionList.Add(action);
+    }
+    public void AddAction(Feat feat, object target = null)
+    {
+        action[0] = feat;
+        action[1] = target;
+        actionList.Add(action);
     }
 
-    public  Turn(Feat feat, IMovable movableObj)
-    {
-        action[0] = feat;
-        action[1] = movableObj;
-    }
+    
+
+
+    
+    
 
     //public Turn(Feat feat, IBreakable breakableObj)
     //{

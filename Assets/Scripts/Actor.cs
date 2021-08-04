@@ -35,20 +35,12 @@ public abstract class Actor : MonoBehaviour
         TryGetComponent<Client>(out client);
     }
 
-    public void HandleMove(Vector2 mousePos)
+    public void HandleMove(Vector3 destination)
     {
-        Ray clickRay = _camera.ScreenPointToRay(mousePos);
-        RaycastHit hitInfo;
-        if (Physics.Raycast(clickRay, out hitInfo))
-        {
-            Debug.Log(hitInfo.point);
-            float x = Mathf.RoundToInt(hitInfo.point.x);
-            float y = Mathf.RoundToInt(hitInfo.point.y);
-            float z = Mathf.RoundToInt(hitInfo.point.z);
-            _destination = new Vector3(x, y, z);
+
             Debug.Log(_destination);
             _agent.destination = _destination;
-        }
+
     }
 
     public abstract int RollInitiative();

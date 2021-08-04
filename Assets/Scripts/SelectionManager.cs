@@ -36,8 +36,8 @@ public class SelectionManager : Singleton<SelectionManager>
 
     private void Start()
     {
-        _input.Agent.Select.performed += _ => SelectHero();
-        _input.Agent.Execute.performed += _ => Execute();
+        //_input.Agent.Select.performed += _ => SelectHero();
+        _input.Agent.Execute.performed += _ => SelectTarget();
 
         UIManager.Instance.OnMoveSelect += SelectMoveFeat;
         UIManager.Instance.OnBreakSelect += SelectBreakFeat;
@@ -60,35 +60,36 @@ public class SelectionManager : Singleton<SelectionManager>
         //reveal UI buttons
     }
 
-    void SelectHero()
-    {
-        if (_eventSystem.IsPointerOverGameObject())
-        {
+    //depreciated
+    //void SelectHero()
+    //{
+    //    if (_eventSystem.IsPointerOverGameObject())
+    //    {
 
-        }
-        else
-        {
-            Debug.Log("Left Click performed");
-            Vector2 mousePos = _input.Agent.MousePosition.ReadValue<Vector2>();
-            Ray clickRay = _camera.ScreenPointToRay(mousePos);
-            RaycastHit hitInfo;
-            if (Physics.Raycast(clickRay, out hitInfo))
-            {
-                Debug.Log(hitInfo.transform.name + " hit by ray");
-                Hero hero = hitInfo.transform.gameObject.GetComponent<Hero>();
-                if (hero != null)
-                {
+    //    }
+    //    else
+    //    {
+    //        Debug.Log("Left Click performed");
+    //        Vector2 mousePos = _input.Agent.MousePosition.ReadValue<Vector2>();
+    //        Ray clickRay = _camera.ScreenPointToRay(mousePos);
+    //        RaycastHit hitInfo;
+    //        if (Physics.Raycast(clickRay, out hitInfo))
+    //        {
+    //            Debug.Log(hitInfo.transform.name + " hit by ray");
+    //            Hero hero = hitInfo.transform.gameObject.GetComponent<Hero>();
+    //            if (hero != null)
+    //            {
 
-                    SelectedActor = hero;
-                    Debug.Log(SelectedActor.name + " selected.");
-                    return;
-                }
-            }
-            Debug.Log("Selecting null");
-            SelectedActor = null;
-        }
+    //                SelectedActor = hero;
+    //                Debug.Log(SelectedActor.name + " selected.");
+    //                return;
+    //            }
+    //        }
+    //        Debug.Log("Selecting null");
+    //        SelectedActor = null;
+    //    }
 
-    }
+    //}
 
     void SelectMoveFeat()
     {
@@ -103,12 +104,13 @@ public class SelectionManager : Singleton<SelectionManager>
         _selectedFeat = SelectedActor.hero.Save;
     }
 
-    void Execute()
+
+    void SelectTarget()
     {
-        Debug.Log("Right Click performed");
-        Vector2 mousePos = _input.Agent.MousePosition.ReadValue<Vector2>();
-        if (SelectedActor != null)
+        if (GameManager.Instance.PlayerTurn)
         {
+            Debug.Log("Right Click performed");
+            Vector2 mousePos = _input.Agent.MousePosition.ReadValue<Vector2>();
             Ray clickRay = _camera.ScreenPointToRay(mousePos);
             RaycastHit hitInfo;
             if (Physics.Raycast(clickRay, out hitInfo))
@@ -119,32 +121,7 @@ public class SelectionManager : Singleton<SelectionManager>
                 Debug.Log("Distance to target is " + distance);
                 if (_selectedFeat != null && _selectedFeat.Range > distance)
                 {
-                    Debug.Log("Executing Feat");
-                    switch (_selectedFeat.Action)
-                    {
-                        case Feat.ActionType.Move:
-                            Debug.Log("Move feat initiated.");
-                            IMovable movable = target.GetComponent<IMovable>();
-                            if(movable != null)
-                            {
-                                ////somehow we have to fit another mouse click in here to designate a target. This is not the proper target at all.
-                                //float x = Mathf.RoundToInt(hitInfo.point.x);
-                                //float y = Mathf.RoundToInt(hitInfo.point.y);
-                                //float z = Mathf.RoundToInt(hitInfo.point.z);
-                                movable.ExecuteMove(2, (Hero)SelectedActor);
-                            }
-                            else
-                            {
-                                Debug.Log("Object is not movable");
-                            }
-                            break;
-                        case Feat.ActionType.Break:
-                            break;
-                        case Feat.ActionType.Save:
-                            break;
-                        default:
-                            break;
-                    }
+                    GameManager.Instance.LogFeat(target, _selectedFeat);
                     _selectedFeat = null;
                     return;
                 }
@@ -156,10 +133,40 @@ public class SelectionManager : Singleton<SelectionManager>
                 }
                 else if (_selectedFeat == null)
                 {
-                    Debug.Log(SelectedActor.name + " executing movement.");
-                    SelectedActor.HandleMove(mousePos);
+                    Debug.Log(hitInfo.point);
+                    float x = Mathf.RoundToInt(hitInfo.point.x);
+                    float y = Mathf.RoundToInt(hitInfo.point.y);
+                    float z = Mathf.RoundToInt(hitInfo.point.z);
+                    Vector3 destination = new Vector3(x, y, z);
+                    GameManager.Instance.LogFeat(target, null);
                 }
             }
+        }
+    }
+
+    private void ExecuteFeat(GameObject target)
+    {
+        Debug.Log("Executing Feat");
+        switch (_selectedFeat.Action)
+        {
+            case Feat.ActionType.Move:
+                Debug.Log("Move feat initiated.");
+                IMovable movable = target.GetComponent<IMovable>();
+                if (movable != null)
+                {
+                    movable.ExecuteMove(2, (Hero)SelectedActor);
+                }
+                else
+                {
+                    Debug.Log("Object is not movable");
+                }
+                break;
+            case Feat.ActionType.Break:
+                break;
+            case Feat.ActionType.Save:
+                break;
+            default:
+                break;
         }
     }
 }
