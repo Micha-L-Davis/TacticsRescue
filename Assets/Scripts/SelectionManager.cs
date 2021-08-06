@@ -12,7 +12,8 @@ public class SelectionManager : Singleton<SelectionManager>
     //UIManager _uiManager;
     [SerializeField]
     EventSystem _eventSystem;
-
+    Vector3 _destination;
+    bool _actionComplete;
     public Actor SelectedActor { get; private set; }
 
     Input _input;
@@ -94,6 +95,7 @@ public class SelectionManager : Singleton<SelectionManager>
     void SelectMoveFeat()
     {
         _selectedFeat = SelectedActor.hero.Move;
+        Debug.Log(_selectedFeat.Action);
     }
     void SelectBreakFeat()
     {
@@ -121,37 +123,40 @@ public class SelectionManager : Singleton<SelectionManager>
                 Debug.Log("Distance to target is " + distance);
                 if (_selectedFeat != null && _selectedFeat.Range > distance)
                 {
-                    GameManager.Instance.LogFeat(target, _selectedFeat);
-                    _selectedFeat = null;
+                    GameManager.Instance.LogFeat(_selectedFeat, target);
+                    //_selectedFeat = null;
                     return;
                 }
                 else if (_selectedFeat != null && _selectedFeat.Range < distance)
                 {
                     Debug.Log("Out of range, action failed");
-                    _selectedFeat = null;
+                    //_selectedFeat = null;
                     return;
                 }
                 else if (_selectedFeat == null)
                 {
+
                     Debug.Log(hitInfo.point);
                     float x = Mathf.RoundToInt(hitInfo.point.x);
                     float y = Mathf.RoundToInt(hitInfo.point.y);
                     float z = Mathf.RoundToInt(hitInfo.point.z);
                     Vector3 destination = new Vector3(x, y, z);
-                    GameManager.Instance.LogFeat(target, null);
+                    GameManager.Instance.LogFeat(destination);
                 }
             }
         }
+        _selectedFeat = null;
     }
 
-    private void ExecuteFeat(GameObject target)
+    public void ExecuteAction(Feat feat, object target)
     {
-        Debug.Log("Executing Feat");
-        switch (_selectedFeat.Action)
+        GameObject gO = (GameObject)target;
+        Debug.Log("Executing Feat " + feat);
+        switch (feat.Action)
         {
             case Feat.ActionType.Move:
                 Debug.Log("Move feat initiated.");
-                IMovable movable = target.GetComponent<IMovable>();
+                IMovable movable = gO.GetComponent<IMovable>();
                 if (movable != null)
                 {
                     movable.ExecuteMove(2, (Hero)SelectedActor);
@@ -162,11 +167,48 @@ public class SelectionManager : Singleton<SelectionManager>
                 }
                 break;
             case Feat.ActionType.Break:
+                //break stuff here
                 break;
             case Feat.ActionType.Save:
+                //save people here
                 break;
             default:
                 break;
         }
+        _actionComplete = true;
+    }
+
+    public void ExecuteAction(Feat feat)
+    {
+        _actionComplete = false;
+        switch (feat.Action)
+        {
+            case Feat.ActionType.Panic:
+                Debug.Log(SelectedActor.name + ": HEEEEEELLLLLLP MEEEEEEEEE!!!");
+                break;
+            case Feat.ActionType.Loot:
+                Debug.Log(SelectedActor.name + " is rummaging for their favorite object");
+                break;
+            default:
+                break;
+        }
+        _actionComplete = true;
+    }
+
+    public void ExecuteAction(object target)
+    { 
+        _destination = (Vector3)target;
+        SelectedActor.HandleMove(_destination);
+    }
+
+    public bool MovementComplete()
+    {
+        float distance = Vector3.Distance(SelectedActor.transform.position, _destination);
+        return distance <= 1.4f;
+    }
+
+    public bool ActionComplete()
+    {
+        return _actionComplete;
     }
 }

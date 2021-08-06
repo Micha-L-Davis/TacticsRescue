@@ -15,6 +15,8 @@ public class UIManager : Singleton<UIManager>
     List<Image> _initiativeRoster = new List<Image>();
     [SerializeField]
     List<TMP_Text> _initiativeText = new List<TMP_Text>();
+    [SerializeField]
+    GameObject _commandPanel;
 
     public void UpdateInitiativeRoster(LinkedList<KeyValuePair<Actor, int>> initList)
     {
@@ -61,5 +63,12 @@ public class UIManager : Singleton<UIManager>
     public void EndTurnButton()
     {
         GameManager.Instance.AdvanceTurn();
+    }
+
+    public void ToggleCommandPanel()
+    {
+        bool toggle = (_commandPanel.activeInHierarchy) ? false : true;
+        _commandPanel.SetActive(toggle);
+
     }
 }

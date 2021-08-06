@@ -15,7 +15,8 @@ public class GameManager : Singleton<GameManager>
     [SerializeField]
     LinkedList<KeyValuePair<Actor, int>> _initiativeOrder = new LinkedList<KeyValuePair<Actor, int>>();
     public bool levelComplete;
-    int currentRound;
+    [SerializeField]
+    int _currentRound;
     public int CurrentRound { get; }
     List<Actor> _actors = new List<Actor>();
     public bool PlayerTurn { get; private set; }
@@ -52,13 +53,14 @@ public class GameManager : Singleton<GameManager>
         {
             RoundStart();
             yield return DeclareActions();
-            yield return new WaitWhile(RoundComplete);
-
+            yield return ProcessRound();
         }
     }
     public void RoundStart()
     {
-        currentRound++;
+        _currentRound++;
+        _initiativeDictionary.Clear();
+        _initiativeOrder.Clear();
         if (OnRoundStart != null)
         {
             foreach (Func<int> func in OnRoundStart.GetInvocationList())
@@ -74,9 +76,9 @@ public class GameManager : Singleton<GameManager>
             }
             //update the UI image for the last image in the on-screen initiative roster
             UIManager.Instance.UpdateInitiativeRoster(_initiativeOrder);
-            _initiativeCeiling = _initiativeOrder.First.Value.Value;
-            _initiativeFloor = _initiativeOrder.Last.Value.Value;
-            _initiativeIndex = _initiativeCeiling;
+            //_initiativeCeiling = _initiativeOrder.First.Value.Value;
+            //_initiativeFloor = _initiativeOrder.Last.Value.Value;
+            //_initiativeIndex = _initiativeCeiling;
         }
         else
         {
@@ -97,12 +99,15 @@ public class GameManager : Singleton<GameManager>
             _thisTurn = new Turn();
             if (actor.IsHero)
             {
+                UIManager.Instance.ToggleCommandPanel();
                 PlayerTurn = true;
                 Debug.Log("Hero" + actor.name + " is chosing an action");
                 yield return new WaitUntil(ActionSelected);
+                UIManager.Instance.ToggleCommandPanel();
             }
             else
             {
+                //AI decisions will run from here--for now all clients do is cower.
                 yield return new WaitForSeconds(1.5f);
                 Debug.Log("Client " + actor.name + " chooses to panic!");
                 Feat feat = new Feat(0, Feat.ActionType.Panic);
@@ -115,10 +120,6 @@ public class GameManager : Singleton<GameManager>
             _initiativeOrder.RemoveLast();
             _initiativeOrder.AddFirst(current);
         }
-        foreach (var item in Round)
-        {
-            Debug.Log(item.actionList.ToString());
-        }
     }
 
     bool ActionSelected()
@@ -126,44 +127,89 @@ public class GameManager : Singleton<GameManager>
         return _thisTurn.actionList.Count == _actionCount;
     }
 
-    public void LogFeat(object target, Feat feat = null)
+    public void LogFeat(object target)
     {
-        _thisTurn.AddAction(target, feat);
+        Debug.Log("Logging movement action to " + (Vector3)target);
+        _thisTurn.AddAction(target);
     }
 
-    public void LogFeat(Feat feat, object target = null)
+    public void LogFeat(Feat feat)
     {
+        Debug.Log("Logging untargeted feat action " + feat.Action);
+        _thisTurn.AddAction(feat);
+    }
+
+    public void LogFeat(Feat feat, object target)
+    {
+        Debug.Log("Logging targeted feat action " + feat.Action );
         _thisTurn.AddAction(feat, target);
     }
 
     IEnumerator ProcessRound()
     {
-        //var currentTurn = Round.First
-        //var currentAction = currentTurn.action.first
+        LinkedListNode<Turn> currentTurnIndex = Round.First;
+        LinkedListNode<object[]> currentActionIndex = currentTurnIndex.Value.actionList.First;
+        SelectionManager.Instance.SelectActor(_initiativeOrder.First.Value.Key);
 
-        //while Round.Count > 0
-        //yield return ExecuteAction(currentAction)
-        
-        //currentAction = currentAction.Next
-        //if currentAction != null
-            //currentTurn.action.Remove(currentAction.Previous)
-        //else
-            //currentTurn.action.Clear()
-            //currentTurn = currentTurn.Next
-            //if currentTurn != null
-                //Round.Remove(currentTurn.Previous)
-            //else
-                //Round.Clear();
+        while (Round.Count > 0)
+        {
+            Debug.Log("Beginning " + SelectionManager.Instance.SelectedActor.name + "'s turn");
+            yield return new WaitForSeconds(1.5f);
+            Feat feat = (Feat)currentActionIndex.Value[0];
+            object target = currentActionIndex.Value[1];
+            if (feat != null && target != null)
+            {
+                Debug.Log("Sending targeted feat for execution");
+                SelectionManager.Instance.ExecuteAction(feat, target);
+                yield return new WaitUntil(SelectionManager.Instance.ActionComplete);
+            }
+            else if (feat != null && target == null)
+            {
+                Debug.Log("Sending untargeted feat for execution");
+                SelectionManager.Instance.ExecuteAction(feat);
+                yield return new WaitUntil(SelectionManager.Instance.ActionComplete);
+            }
+            else if (feat == null && target != null)
+            {
+                Debug.Log("Sending movement order for execution");
+                SelectionManager.Instance.ExecuteAction(target);
+                yield return new WaitUntil(SelectionManager.Instance.MovementComplete);
+            }
+            else if (feat == null && target == null)
+            {
+                Debug.LogError("Invalid action recorded, cannot transmit--all fields are null");
+            }
+            
+            currentActionIndex = currentActionIndex.Next;
+            if (currentActionIndex != null)
+            {
+                currentTurnIndex.Value.actionList.Remove(currentActionIndex.Previous);
+            }
+            else
+            {
+                Debug.Log("Last action on list reached");
+                currentTurnIndex.Value.actionList.Clear();
+                currentTurnIndex = currentTurnIndex.Next;
+                AdvanceTurn();
+            }
 
-        
-
-        yield break; 
+            if (currentTurnIndex != null)
+            {
+                Round.Remove(currentTurnIndex.Previous);
+                currentActionIndex = currentTurnIndex.Value.actionList.First;
+            }
+            else
+            {
+                Round.Clear();
+            }
+        }
     }
 
     void AIDeclareAction()
     {
 
     }
+
 
     public void AdvanceTurn()
     {
@@ -175,10 +221,5 @@ public class GameManager : Singleton<GameManager>
         SelectionManager.Instance.SelectActor(_initiativeOrder.First.Value.Key);
 
         _initiativeIndex = _initiativeOrder.First.Value.Value;
-    }
-
-    bool RoundComplete()
-    {
-        return _initiativeIndex > _initiativeFloor;
     }
 }

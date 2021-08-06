@@ -38,8 +38,8 @@ public abstract class Actor : MonoBehaviour
     public void HandleMove(Vector3 destination)
     {
 
-            Debug.Log(_destination);
-            _agent.destination = _destination;
+            Debug.Log(destination);
+            _agent.destination = destination;
 
     }
 
