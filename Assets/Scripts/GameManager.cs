@@ -22,7 +22,7 @@ public class GameManager : Singleton<GameManager>
     public bool PlayerTurn { get; private set; }
     Turn _thisTurn;
     int _actionCount = 1;
-    LinkedList<Turn> Round = new LinkedList<Turn>();
+    LinkedList<Turn> round = new LinkedList<Turn>();
 
 
     private void Start()
@@ -99,6 +99,7 @@ public class GameManager : Singleton<GameManager>
             _thisTurn = new Turn();
             if (actor.IsHero)
             {
+                _actionCount = 2;
                 UIManager.Instance.ToggleCommandPanel();
                 PlayerTurn = true;
                 Debug.Log("Hero" + actor.name + " is chosing an action");
@@ -107,6 +108,7 @@ public class GameManager : Singleton<GameManager>
             }
             else
             {
+                _actionCount = 1;
                 //AI decisions will run from here--for now all clients do is cower.
                 yield return new WaitForSeconds(1.5f);
                 Debug.Log("Client " + actor.name + " chooses to panic!");
@@ -114,7 +116,7 @@ public class GameManager : Singleton<GameManager>
                 LogFeat(feat);
             }
             //Add Turn to Round.First
-            Round.AddFirst(_thisTurn);
+            round.AddFirst(_thisTurn);
             //move last initiative member to front of line
             var current = _initiativeOrder.Last;
             _initiativeOrder.RemoveLast();
@@ -147,27 +149,42 @@ public class GameManager : Singleton<GameManager>
 
     IEnumerator ProcessRound()
     {
-        LinkedListNode<Turn> currentTurnIndex = Round.First;
+        LinkedListNode<Turn> currentTurnIndex = round.First;
         LinkedListNode<object[]> currentActionIndex = currentTurnIndex.Value.actionList.First;
         SelectionManager.Instance.SelectActor(_initiativeOrder.First.Value.Key);
 
-        while (Round.Count > 0)
+        while (round.Count > 0)
         {
             Debug.Log("Beginning " + SelectionManager.Instance.SelectedActor.name + "'s turn");
-            yield return new WaitForSeconds(1.5f);
+            Debug.Log("This turn's action list:");
+            Debug.Log("------------------------");
+            foreach (var item in currentTurnIndex.Value.actionList)
+            {
+                if (item[0] != null)
+                {
+                    Feat f = (Feat)item[0];
+                    Debug.Log("Feat: " + f.Action);
+                }
+                if (item[1] != null)
+                {
+                    Debug.Log("Target: " + item[1]);
+                }
+                Debug.Log("........................");
+            }
+            yield return new WaitForSeconds(1f);
             Feat feat = (Feat)currentActionIndex.Value[0];
             object target = currentActionIndex.Value[1];
             if (feat != null && target != null)
             {
                 Debug.Log("Sending targeted feat for execution");
                 SelectionManager.Instance.ExecuteAction(feat, target);
-                yield return new WaitUntil(SelectionManager.Instance.ActionComplete);
+                yield return new WaitForSeconds(2);
             }
             else if (feat != null && target == null)
             {
                 Debug.Log("Sending untargeted feat for execution");
                 SelectionManager.Instance.ExecuteAction(feat);
-                yield return new WaitUntil(SelectionManager.Instance.ActionComplete);
+                yield return new WaitForSeconds(2);
             }
             else if (feat == null && target != null)
             {
@@ -191,16 +208,16 @@ public class GameManager : Singleton<GameManager>
                 currentTurnIndex.Value.actionList.Clear();
                 currentTurnIndex = currentTurnIndex.Next;
                 AdvanceTurn();
-            }
 
-            if (currentTurnIndex != null)
-            {
-                Round.Remove(currentTurnIndex.Previous);
-                currentActionIndex = currentTurnIndex.Value.actionList.First;
-            }
-            else
-            {
-                Round.Clear();
+                if (currentTurnIndex != null)
+                {
+                    round.Remove(currentTurnIndex.Previous);
+                    currentActionIndex = currentTurnIndex.Value.actionList.First;
+                }
+                else
+                {
+                    round.Clear();
+                }
             }
         }
     }

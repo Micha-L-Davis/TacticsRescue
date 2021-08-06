@@ -13,6 +13,7 @@ public class SelectionManager : Singleton<SelectionManager>
     [SerializeField]
     EventSystem _eventSystem;
     Vector3 _destination;
+    Vector3 _lastPosition;
     bool _actionComplete;
     public Actor SelectedActor { get; private set; }
 
@@ -39,7 +40,6 @@ public class SelectionManager : Singleton<SelectionManager>
     {
         //_input.Agent.Select.performed += _ => SelectHero();
         _input.Agent.Execute.performed += _ => SelectTarget();
-
         UIManager.Instance.OnMoveSelect += SelectMoveFeat;
         UIManager.Instance.OnBreakSelect += SelectBreakFeat;
         UIManager.Instance.OnSaveSelect += SelectSaveFeat;
@@ -57,6 +57,7 @@ public class SelectionManager : Singleton<SelectionManager>
     public void SelectActor(Actor actor)
     {
         SelectedActor = actor;
+        _lastPosition = SelectedActor.transform.position;
         //highlight actor with shader
         //reveal UI buttons
     }
@@ -119,33 +120,32 @@ public class SelectionManager : Singleton<SelectionManager>
             {
                 GameObject target = hitInfo.transform.gameObject;
                 Debug.Log("Target object is " + target.name);
-                float distance = Vector3.Distance(target.transform.position, SelectedActor.transform.position);
+                float distance = Vector3.Distance(target.transform.position, _lastPosition);
                 Debug.Log("Distance to target is " + distance);
-                if (_selectedFeat != null && _selectedFeat.Range > distance)
-                {
-                    GameManager.Instance.LogFeat(_selectedFeat, target);
-                    //_selectedFeat = null;
-                    return;
-                }
-                else if (_selectedFeat != null && _selectedFeat.Range < distance)
-                {
-                    Debug.Log("Out of range, action failed");
-                    //_selectedFeat = null;
-                    return;
-                }
-                else if (_selectedFeat == null)
+                if (_selectedFeat == null)
                 {
 
                     Debug.Log(hitInfo.point);
                     float x = Mathf.RoundToInt(hitInfo.point.x);
                     float y = Mathf.RoundToInt(hitInfo.point.y);
                     float z = Mathf.RoundToInt(hitInfo.point.z);
-                    Vector3 destination = new Vector3(x, y, z);
-                    GameManager.Instance.LogFeat(destination);
+                    _destination = new Vector3(x, y, z);
+                    GameManager.Instance.LogFeat(_destination);
+                    _lastPosition = _destination;
+                }
+                else if (_selectedFeat != null && _selectedFeat.Range < distance)
+                {
+                    Debug.Log("Out of range, action failed");
+                    _selectedFeat = null;
+                }
+                else if (_selectedFeat != null && _selectedFeat.Range > distance)
+                {
+                    GameManager.Instance.LogFeat(_selectedFeat, target);
+                    _selectedFeat = null;
                 }
             }
+            _selectedFeat = null;
         }
-        _selectedFeat = null;
     }
 
     public void ExecuteAction(Feat feat, object target)
@@ -175,7 +175,6 @@ public class SelectionManager : Singleton<SelectionManager>
             default:
                 break;
         }
-        _actionComplete = true;
     }
 
     public void ExecuteAction(Feat feat)
@@ -205,10 +204,5 @@ public class SelectionManager : Singleton<SelectionManager>
     {
         float distance = Vector3.Distance(SelectedActor.transform.position, _destination);
         return distance <= 1.4f;
-    }
-
-    public bool ActionComplete()
-    {
-        return _actionComplete;
     }
 }
