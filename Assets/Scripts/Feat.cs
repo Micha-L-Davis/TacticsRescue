@@ -4,33 +4,31 @@ using UnityEngine;
 
 public class Feat 
 {
-    //custom behavior for activating an interface
-
     //protected Animation _animation;
     //protected AudioClip _audio;
 
-    protected int _range;
+    protected float _range;
 
-    public int Range => _range;
+    public float Range => _range;
 
     public enum ActionType
     {
-        Move,
-        Break,
-        Save,
+        MoveObject,
+        BreakObject,
+        SaveClient,
         Panic,
         Loot
     };
-    public ActionType Action { get; private set; }
+    public ActionType FeatActionType { get; private set; }
 
-    public Feat(int range, ActionType actionType//, Animation animation, AudioClip audio
+    public Feat(float range, ActionType actionType//, Animation animation, AudioClip audio
         )
     {
         //_animation = animation;
         //_audio = audio;
 
         _range = range;
-        this.Action = actionType;
+        FeatActionType = actionType;
     }
 
 }

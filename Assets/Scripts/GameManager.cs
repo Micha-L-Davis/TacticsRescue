@@ -20,10 +20,16 @@ public class GameManager : Singleton<GameManager>
     public int CurrentRound { get; }
     List<Actor> _actors = new List<Actor>();
     public bool PlayerTurn { get; private set; }
-    Turn _thisTurn;
+    LinkedList<ICommand> _thisTurn;
     int _actionCount = 1;
-    LinkedList<Turn> round = new LinkedList<Turn>();
+    LinkedList<LinkedList<ICommand>> _roundBuffer = new LinkedList<LinkedList<ICommand>>();
+    private LinkedList<ICommand> _commandBuffer = new LinkedList<ICommand>();
 
+    public void AddCommand(ICommand command)
+    {
+        _commandBuffer.AddLast(command);
+        Debug.Log("Command queued, " + _commandBuffer.Count + " commands in turn buffer");
+    }
 
     private void Start()
     {
@@ -74,11 +80,7 @@ public class GameManager : Singleton<GameManager>
                 Debug.Log("Actor: " + actor.Key.name + " Intitiative: " + actor.Value);
                 _initiativeOrder.AddFirst(actor);
             }
-            //update the UI image for the last image in the on-screen initiative roster
-            UIManager.Instance.UpdateInitiativeRoster(_initiativeOrder);
-            //_initiativeCeiling = _initiativeOrder.First.Value.Value;
-            //_initiativeFloor = _initiativeOrder.Last.Value.Value;
-            //_initiativeIndex = _initiativeCeiling;
+            UIManager.Instance.UpdateInitiativeRoster(_initiativeOrder);;
         }
         else
         {
@@ -89,14 +91,13 @@ public class GameManager : Singleton<GameManager>
 
     IEnumerator DeclareActions()
     {
-        //for loop on number of actors in play
         for (int i = 0; i < _actors.Count; i++)
         {
+            _commandBuffer = new LinkedList<ICommand>();
             //select the last initiative member
             SelectionManager.Instance.SelectActor(_initiativeOrder.Last.Value.Key);
             Actor actor = SelectionManager.Instance.SelectedActor;
             //if actor.IsHero
-            _thisTurn = new Turn();
             if (actor.IsHero)
             {
                 _actionCount = 2;
@@ -113,10 +114,11 @@ public class GameManager : Singleton<GameManager>
                 yield return new WaitForSeconds(1.5f);
                 Debug.Log("Client " + actor.name + " chooses to panic!");
                 Feat feat = new Feat(0, Feat.ActionType.Panic);
-                LogFeat(feat);
+                _commandBuffer.AddLast(new PanicCommand(SelectionManager.Instance.SelectedActor));
             }
-            //Add Turn to Round.First
-            round.AddFirst(_thisTurn);
+            //Add commands for this turn to Round.First
+            _roundBuffer.AddFirst(_commandBuffer);
+            Debug.Log("Command Buffer loaded into round list. There are currently " + _roundBuffer.Count + " turns in round.");
             //move last initiative member to front of line
             var current = _initiativeOrder.Last;
             _initiativeOrder.RemoveLast();
@@ -126,97 +128,51 @@ public class GameManager : Singleton<GameManager>
 
     bool ActionSelected()
     {
-        return _thisTurn.actionList.Count == _actionCount;
-    }
-
-    public void LogFeat(object target)
-    {
-        Debug.Log("Logging movement action to " + (Vector3)target);
-        _thisTurn.AddAction(target);
-    }
-
-    public void LogFeat(Feat feat)
-    {
-        Debug.Log("Logging untargeted feat action " + feat.Action);
-        _thisTurn.AddAction(feat);
-    }
-
-    public void LogFeat(Feat feat, object target)
-    {
-        Debug.Log("Logging targeted feat action " + feat.Action );
-        _thisTurn.AddAction(feat, target);
+        return _commandBuffer.Count == _actionCount;
     }
 
     IEnumerator ProcessRound()
     {
-        LinkedListNode<Turn> currentTurnIndex = round.First;
-        LinkedListNode<object[]> currentActionIndex = currentTurnIndex.Value.actionList.First;
+        Debug.Log(_roundBuffer.Count + " turns in queue");
+        LinkedListNode<LinkedList<ICommand>> currentTurnNode = _roundBuffer.First;
+        Debug.Log("Current turn loaded. " + currentTurnNode.Value.Count + " actions queued");
+        LinkedListNode<ICommand> currentActionNode = currentTurnNode.Value.First;
+        Debug.Log("Current action loaded: " + currentActionNode.Value.ToString());
         SelectionManager.Instance.SelectActor(_initiativeOrder.First.Value.Key);
 
-        while (round.Count > 0)
+        while (_roundBuffer.Count > 0)
         {
             Debug.Log("Beginning " + SelectionManager.Instance.SelectedActor.name + "'s turn");
-            Debug.Log("This turn's action list:");
-            Debug.Log("------------------------");
-            foreach (var item in currentTurnIndex.Value.actionList)
+            yield return new WaitForSeconds(.5f);
+            currentActionNode.Value.Execute();
+            if (currentActionNode.Value.ToString() == "ActorMovementCommand")
             {
-                if (item[0] != null)
-                {
-                    Feat f = (Feat)item[0];
-                    Debug.Log("Feat: " + f.Action);
-                }
-                if (item[1] != null)
-                {
-                    Debug.Log("Target: " + item[1]);
-                }
-                Debug.Log("........................");
+                yield return new WaitUntil(SelectionManager.Instance.SelectedActor.MovementComplete);
             }
-            yield return new WaitForSeconds(1f);
-            Feat feat = (Feat)currentActionIndex.Value[0];
-            object target = currentActionIndex.Value[1];
-            if (feat != null && target != null)
+            else
             {
-                Debug.Log("Sending targeted feat for execution");
-                SelectionManager.Instance.ExecuteAction(feat, target);
-                yield return new WaitForSeconds(2);
+                yield return new WaitForSeconds(1);
             }
-            else if (feat != null && target == null)
+            currentActionNode = currentActionNode.Next;
+            if (currentActionNode != null)
             {
-                Debug.Log("Sending untargeted feat for execution");
-                SelectionManager.Instance.ExecuteAction(feat);
-                yield return new WaitForSeconds(2);
-            }
-            else if (feat == null && target != null)
-            {
-                Debug.Log("Sending movement order for execution");
-                SelectionManager.Instance.ExecuteAction(target);
-                yield return new WaitUntil(SelectionManager.Instance.MovementComplete);
-            }
-            else if (feat == null && target == null)
-            {
-                Debug.LogError("Invalid action recorded, cannot transmit--all fields are null");
-            }
-            
-            currentActionIndex = currentActionIndex.Next;
-            if (currentActionIndex != null)
-            {
-                currentTurnIndex.Value.actionList.Remove(currentActionIndex.Previous);
+                currentTurnNode.Value.Remove(currentActionNode.Previous);
             }
             else
             {
                 Debug.Log("Last action on list reached");
-                currentTurnIndex.Value.actionList.Clear();
-                currentTurnIndex = currentTurnIndex.Next;
+                currentTurnNode.Value.Clear();
+                currentTurnNode = currentTurnNode.Next;
                 AdvanceTurn();
 
-                if (currentTurnIndex != null)
+                if (currentTurnNode != null)
                 {
-                    round.Remove(currentTurnIndex.Previous);
-                    currentActionIndex = currentTurnIndex.Value.actionList.First;
+                    _roundBuffer.Remove(currentTurnNode.Previous);
+                    currentActionNode = currentTurnNode.Value.First;
                 }
                 else
                 {
-                    round.Clear();
+                    _roundBuffer.Clear();
                 }
             }
         }

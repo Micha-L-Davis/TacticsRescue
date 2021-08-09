@@ -125,15 +125,15 @@ public class Hero : Actor
         //mental character type constructors
         //get these tied to attributes rather than magic numbers
         _feats = new List<Feat>();
-        _move = new Feat(3, Feat.ActionType.Move);
+        _move = new Feat(3.51f, Feat.ActionType.MoveObject);
         _feats.Add(_move);
-        _break = new Feat(6, Feat.ActionType.Break);
+        _break = new Feat(6.51f, Feat.ActionType.BreakObject);
         _feats.Add(_break);
-        _save = new Feat(2, Feat.ActionType.Save);
+        _save = new Feat(1.51f, Feat.ActionType.SaveClient);
         _feats.Add(_save);
         foreach (var feat in _feats)
         {
-            Debug.Log(this.name + " " + feat.Action + " action logged.");
+            Debug.Log(this.name + " " + feat.FeatActionType + " action logged.");
         }
     }
 
