@@ -14,6 +14,8 @@ public class ActorMovementCommand : ICommand
         Queue();
     }
 
+    public float ExecutionTime => throw new System.NotImplementedException();
+
     public void Execute()
     {
         _actor.ExecuteMovement(_destination);

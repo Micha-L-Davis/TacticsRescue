@@ -5,11 +5,15 @@ using UnityEngine;
 public class PanicCommand : ICommand
 {
     Actor _actor;
+    float _executionTime;
 
-    public PanicCommand(Actor actor)
+    public PanicCommand(Actor actor, float executionTime)
     {
         _actor = actor;
+        _executionTime = executionTime;
     }
+
+    public float ExecutionTime => _executionTime;
 
     public void Execute()
     {

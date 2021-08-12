@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
-public class MovableBlock : MonoBehaviour, IMovable
+public class MovableObject : MonoBehaviour, IMovable
 {
     Rigidbody _rigidbody;
     float _speed = 5;

@@ -11,7 +11,7 @@ public class GameManager : Singleton<GameManager>
     public static Func<int> OnRoundStart;
 
     Dictionary<Actor, int> _initiativeDictionary = new Dictionary<Actor, int>();
-    int _initiativeIndex, _initiativeCeiling, _initiativeFloor;
+    int _initiativeIndex;
     [SerializeField]
     LinkedList<KeyValuePair<Actor, int>> _initiativeOrder = new LinkedList<KeyValuePair<Actor, int>>();
     public bool levelComplete;
@@ -104,7 +104,7 @@ public class GameManager : Singleton<GameManager>
                 UIManager.Instance.ToggleCommandPanel();
                 PlayerTurn = true;
                 Debug.Log("Hero" + actor.name + " is chosing an action");
-                yield return new WaitUntil(ActionSelected);
+                yield return new WaitUntil(ActionsSelected);
                 UIManager.Instance.ToggleCommandPanel();
             }
             else
@@ -114,7 +114,7 @@ public class GameManager : Singleton<GameManager>
                 yield return new WaitForSeconds(1.5f);
                 Debug.Log("Client " + actor.name + " chooses to panic!");
                 Feat feat = new Feat(0, Feat.ActionType.Panic);
-                _commandBuffer.AddLast(new PanicCommand(SelectionManager.Instance.SelectedActor));
+                _commandBuffer.AddLast(new PanicCommand(SelectionManager.Instance.SelectedActor, .5f));
             }
             //Add commands for this turn to Round.First
             _roundBuffer.AddFirst(_commandBuffer);
@@ -126,7 +126,7 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
-    bool ActionSelected()
+    bool ActionsSelected()
     {
         return _commandBuffer.Count == _actionCount;
     }
@@ -151,7 +151,7 @@ public class GameManager : Singleton<GameManager>
             }
             else
             {
-                yield return new WaitForSeconds(1);
+                yield return new WaitForSeconds(currentActionNode.Value.ExecutionTime);
             }
             currentActionNode = currentActionNode.Next;
             if (currentActionNode != null)

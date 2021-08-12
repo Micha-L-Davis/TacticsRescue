@@ -9,4 +9,6 @@ public interface ICommand
     void Execute();
     void Undo();
 
+    float ExecutionTime { get; }
+
 }

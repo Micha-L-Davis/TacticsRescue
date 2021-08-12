@@ -118,11 +118,25 @@ public class SelectionManager : Singleton<SelectionManager>
                             }
                             else
                             {
-                                _command = new MoveObjectCommand(movable, 2, (Hero)SelectedActor);
+                                _command = new MoveObjectCommand(movable, 2, (Hero)SelectedActor, 1);
                             }
 
                             break;
                         case Feat.ActionType.BreakObject:
+                            IBreakable breakable = target.GetComponent<IBreakable>();
+                            if (breakable == null)
+                            {
+                                Debug.Log("Cannot break unbreakable object");
+                            }
+                            else
+                            {
+                                Hero hero = (Hero)SelectedActor;
+                                if (hero.HeroicOrigin == HeroData.HeroicOrigin.Mental)
+                                {
+                                    _command = new BreakObjectCommand((int)hero.Will, hero.Will, 1);
+                                }
+
+                            }
                             break;
                         case Feat.ActionType.SaveClient:
                             break;
