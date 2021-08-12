@@ -22,7 +22,7 @@ public class Hero : Actor
             return _heroData.heroName;
         }
     }
-    public int Strength
+    public IntensityTable.Intensity Strength
     {
         get
         {
@@ -34,7 +34,7 @@ public class Hero : Actor
             _heroData.strength = value;
         }
     }
-    public int Fortitude
+    public IntensityTable.Intensity Fortitude
     {
         get
         {
@@ -46,7 +46,7 @@ public class Hero : Actor
             _heroData.fortitude = value;
         }
     }
-    public int Coordination
+    public IntensityTable.Intensity Coordination
     {
         get
         {
@@ -58,7 +58,7 @@ public class Hero : Actor
             _heroData.coordination = value;
         }
     }
-    public int Awareness
+    public IntensityTable.Intensity Awareness
     {
         get
         {
@@ -68,10 +68,10 @@ public class Hero : Actor
         private set
         {
             _heroData.awareness = value;
-            InitiativeBonus = Mathf.FloorToInt(Awareness / 10);
+            InitiativeBonus = Mathf.FloorToInt((int)Awareness / 10);
         }
     }
-    public int Will
+    public IntensityTable.Intensity Will
     {
         get
         {
@@ -109,6 +109,13 @@ public class Hero : Actor
         }
     }
 
+    public HeroData.HeroicOrigin HeroicOrigin
+    {
+        get
+        {
+            return _heroData.heroicOrigin;
+        }
+    }
 
     //enum Archetype
     //{
@@ -142,7 +149,7 @@ public class Hero : Actor
     private void Awake()
     {
         Health = _heroData.maxHealth;
-        InitiativeBonus = Mathf.FloorToInt(Awareness / 10);
+        InitiativeBonus = Mathf.FloorToInt((int)Awareness / 10);
     }
 
     public override int RollInitiative()

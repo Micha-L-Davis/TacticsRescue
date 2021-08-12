@@ -9,17 +9,19 @@ public class HeroData : ScriptableObject
     public enum HeroicOrigin { Physical,Mental };
     public HeroicOrigin heroicOrigin;
     [Header("Attributes")]
-    public int strength;
-    public int fortitude;
-    public int coordination;
+    public IntensityTable.Intensity strength;
+    public IntensityTable.Intensity fortitude;
+    public IntensityTable.Intensity coordination;
     //public int martial;
-    public int awareness;
+    public IntensityTable.Intensity awareness;
     //public int logic;
-    public int will;
+    public IntensityTable.Intensity will;
 
     [Header("Derived Attributes")]
     public int maxHealth;
     public int currentHealth;
     public int experience;
     public int initiativeBonus;
+
+    
 }
