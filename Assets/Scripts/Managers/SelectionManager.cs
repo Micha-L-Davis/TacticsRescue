@@ -139,6 +139,15 @@ public class SelectionManager : Singleton<SelectionManager>
                             }
                             break;
                         case Feat.ActionType.SaveClient:
+                            ISaveable saveable = target.GetComponent<ISaveable>();
+                            if (saveable == null)
+                            {
+                                Debug.Log("Cannot save unsaveable object");
+                            }
+                            else
+                            {
+                                //construct a new saveobject command
+                            }
                             break;
                         case Feat.ActionType.Panic:
                             break;

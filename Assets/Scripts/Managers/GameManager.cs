@@ -9,6 +9,7 @@ public class GameManager : Singleton<GameManager>
     protected GameManager() { }
 
     public static Func<int> OnRoundStart;
+    public static Action OnTurnEnd;
 
     Dictionary<Actor, int> _initiativeDictionary = new Dictionary<Actor, int>();
     int _initiativeIndex;
@@ -100,7 +101,7 @@ public class GameManager : Singleton<GameManager>
             //if actor.IsHero
             if (actor.IsHero)
             {
-                _actionCount = 2;
+                _actionCount = 2; //temporary magic number
                 UIManager.Instance.ToggleCommandPanel();
                 PlayerTurn = true;
                 Debug.Log("Hero" + actor.name + " is chosing an action");
@@ -109,7 +110,7 @@ public class GameManager : Singleton<GameManager>
             }
             else
             {
-                _actionCount = 1;
+                _actionCount = 1; //probably permanent magic number
                 //AI decisions will run from here--for now all clients do is cower.
                 yield return new WaitForSeconds(1.5f);
                 Debug.Log("Client " + actor.name + " chooses to panic!");
@@ -178,14 +179,12 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
-    void AIDeclareAction()
-    {
 
-    }
 
 
     public void AdvanceTurn()
     {
+        OnTurnEnd?.Invoke();
         var current = _initiativeOrder.First;
         _initiativeOrder.RemoveFirst();
         _initiativeOrder.AddLast(current);
