@@ -4,7 +4,15 @@ using UnityEngine;
 
 public class SaveObjectCommand : ICommand
 {
-    public float ExecutionTime => throw new System.NotImplementedException();
+    ISaveable _saveableObject;
+    int _executionTime;
+    public SaveObjectCommand(ISaveable saveableObject, int executionTime)
+    {
+        _saveableObject = saveableObject;
+        _executionTime = executionTime;
+    }
+
+    public float ExecutionTime => _executionTime;
 
     public void Execute()
     {
