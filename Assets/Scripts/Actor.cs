@@ -41,10 +41,15 @@ public abstract class Actor : MonoBehaviour
     {
         Debug.Log(transform.name + " moving to " + destination);
         _destination = destination;
-        _previousPosition = transform.position;
-        _previousRotation = transform.rotation;
+        RecordTransformData();
         Debug.Log("Moving to " + destination);
         _agent.destination = destination;
+    }
+
+    protected void RecordTransformData()
+    {
+        _previousPosition = transform.position;
+        _previousRotation = transform.rotation;
     }
 
     public void UndoMovement()

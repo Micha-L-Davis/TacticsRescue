@@ -10,28 +10,30 @@ public class SaveObjectCommand : ICommand
     {
         _saveableObject = saveableObject;
         _executionTime = executionTime;
+        Queue();
     }
 
     public float ExecutionTime => _executionTime;
 
     public void Execute()
     {
-        throw new System.NotImplementedException();
+        _saveableObject.Rescue();
     }
 
     public void Queue()
     {
-        throw new System.NotImplementedException();
+        GameManager.Instance.AddCommand(this);
+        Debug.Log("Queueing Save Object Command");
     }
 
     public void Undo()
     {
-        throw new System.NotImplementedException();
+        _saveableObject.UndoRescue();
     }
 
     public void UnQueue()
     {
-        throw new System.NotImplementedException();
+        //remove this from the command manager list
     }
 
 }

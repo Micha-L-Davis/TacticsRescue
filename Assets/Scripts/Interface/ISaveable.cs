@@ -7,4 +7,6 @@ public interface ISaveable
     int PerilCountdown { get; }
     bool Imperiled { get; }
     void Rescue();
+
+    void UndoRescue();
 }
