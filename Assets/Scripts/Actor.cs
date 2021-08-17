@@ -7,7 +7,7 @@ using UnityEngine.InputSystem.Controls;
 using System;
 
 [RequireComponent(typeof(NavMeshAgent))]
-public abstract class Actor : MonoBehaviour
+public abstract class Actor : MonoBehaviour, IBreakable
 {
     [SerializeField]
     Camera _camera;
@@ -19,6 +19,12 @@ public abstract class Actor : MonoBehaviour
     public Hero hero;
     public Client client;
     public bool IsHero { get; private set; }
+    [SerializeField]
+    int _health;
+    [SerializeField]
+    IntensityTable.Intensity _bodyResistance = IntensityTable.Intensity.Average;
+    public int Integrity => _health;
+    public IntensityTable.Intensity MaterialResistance => _bodyResistance;
 
     protected virtual void Start()
     {
@@ -63,5 +69,30 @@ public abstract class Actor : MonoBehaviour
     {
         float distance = Vector3.Distance(transform.position, _destination);
         return distance <= 1.4f;
+    }
+    public void Damage(int amount, IntensityTable.Intensity intensity)
+    {
+        if (intensity > _bodyResistance)
+        {
+            _health -= amount;
+        }
+        else
+        {
+            int a = amount - (int)_bodyResistance;
+            _health -= a;
+        }
+    }
+
+    public void UndoDamage(int amount, IntensityTable.Intensity intensity)
+    {
+        if (intensity > _bodyResistance)
+        {
+            _health += amount;
+        }
+        else
+        {
+            int amt = amount - (int)_bodyResistance;
+            _health += amt;
+        }
     }
 }

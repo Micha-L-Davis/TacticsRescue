@@ -7,6 +7,7 @@ public class Client : Actor, ISaveable
 {
     int _perilCountdown;
     bool _imperiled = true;
+
     //Rigidbody _rigidbody;
     Collider _collider;
 
@@ -17,12 +18,14 @@ public class Client : Actor, ISaveable
         Disabled,
         SeekingSafety
     }
-
+    [SerializeField]
     PerilCondition _perilStatus = PerilCondition.SeekingSafety;
 
     public int PerilCountdown => _perilCountdown;
 
     public bool Imperiled => _imperiled;
+
+   
 
     protected override void Start()
     {
@@ -119,5 +122,5 @@ public class Client : Actor, ISaveable
         return roll;
     }
 
-
+    
 }
