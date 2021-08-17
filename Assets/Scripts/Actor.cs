@@ -15,6 +15,7 @@ public abstract class Actor : MonoBehaviour, IBreakable
     protected Vector3 _previousPosition;
     protected Quaternion _previousRotation;
     protected NavMeshAgent _agent;
+    protected CapsuleCollider _collider;
     public Sprite portrait;
     public Hero hero;
     public Client client;
@@ -93,6 +94,11 @@ public abstract class Actor : MonoBehaviour, IBreakable
         {
             int amt = amount - (int)_bodyResistance;
             _health += amt;
+        }
+        if (_health < 1)
+        {
+            _agent.enabled = false;
+            transform.SetPositionAndRotation(new Vector3(transform.position.x, 1f + _collider.radius, transform.position.z),Quaternion.Euler(90, 0, 0));
         }
     }
 }

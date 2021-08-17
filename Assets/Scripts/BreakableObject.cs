@@ -7,7 +7,7 @@ public class BreakableObject : MonoBehaviour, IBreakable
     [SerializeField]
     IntensityTable.Intensity _materialResistance;
     [SerializeField]
-    int _integrity;
+    int _integrity = 1;
     public IntensityTable.Intensity MaterialResistance => _materialResistance;
     public int Integrity => _integrity;
 
@@ -21,6 +21,10 @@ public class BreakableObject : MonoBehaviour, IBreakable
         {
             int a = amount - (int)MaterialResistance;
             _integrity -= a;
+        }
+        if (_integrity < 1)
+        {
+            gameObject.SetActive(false);
         }
     }
 
