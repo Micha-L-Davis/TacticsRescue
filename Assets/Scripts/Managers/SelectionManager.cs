@@ -63,6 +63,7 @@ public class SelectionManager : Singleton<SelectionManager>
     void SelectBreakFeat()
     {
         _selectedFeat = SelectedActor.hero.Break;
+        Debug.Log(_selectedFeat.FeatActionType);
     }
     void SelectSaveFeat()
     {
@@ -118,6 +119,7 @@ public class SelectionManager : Singleton<SelectionManager>
                             }
                             else
                             {
+                                Debug.Log("Creating new move object command");
                                 _command = new MoveObjectCommand(movable, 2, (Hero)SelectedActor, 1);
                             }
 
@@ -130,10 +132,15 @@ public class SelectionManager : Singleton<SelectionManager>
                             }
                             else
                             {
+                                Debug.Log("Creating new break object command");
                                 Hero hero = (Hero)SelectedActor;
                                 if (hero.HeroicOrigin == HeroData.HeroicOrigin.Mental)
                                 {
-                                    _command = new BreakObjectCommand((int)hero.Will, hero.Will, 1);
+                                    _command = new BreakObjectCommand(breakable, (int)hero.Will, hero.Will, 1);
+                                }
+                                else if (hero.HeroicOrigin == HeroData.HeroicOrigin.Physical)
+                                {
+                                    _command = new BreakObjectCommand(breakable, (int)hero.Strength, hero.Strength, 1);
                                 }
 
                             }

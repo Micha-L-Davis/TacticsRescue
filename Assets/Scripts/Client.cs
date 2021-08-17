@@ -8,9 +8,6 @@ public class Client : Actor, ISaveable
     int _perilCountdown;
     bool _imperiled = true;
 
-    //Rigidbody _rigidbody;
-    Collider _collider;
-
     enum PerilCondition
     {
         Pinned,
@@ -31,23 +28,13 @@ public class Client : Actor, ISaveable
     {
         base.Start();
         GameManager.OnTurnEnd += ProcessPeril;
-        //_rigidbody = GetComponent<Rigidbody>();
-        //if (_rigidbody == null)
-        //{
-        //    Debug.LogError("Rigidbody component is null!");
-        //}
-        _collider = GetComponent<Collider>();
-        if (_collider == null)
-        {
-            Debug.LogError("Collider component is null!");
-        }
     }
 
     private void Update()
     {
-        Debug.DrawRay(transform.position, Vector3.up, Color.green);
-        Debug.DrawRay(transform.position, Vector3.down, Color.blue);
-        Debug.Log(this.name + " " + _perilStatus);
+        //Debug.DrawRay(transform.position, Vector3.up, Color.green);
+        //Debug.DrawRay(transform.position, Vector3.down, Color.blue);
+        //Debug.Log(this.name + " " + _perilStatus);
         RaycastHit hitInfo;
         if (Physics.Raycast(transform.position, Vector3.up, out hitInfo, 1f))
         {

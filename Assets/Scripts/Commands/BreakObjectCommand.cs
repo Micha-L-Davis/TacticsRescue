@@ -6,15 +6,17 @@ public class BreakObjectCommand : ICommand
 {
     int _damage;
     IntensityTable.Intensity _intensity;
-    BreakableObject _breakableObject;
+    IBreakable _breakableObject;
     float _executionTime;
 
 
-    public BreakObjectCommand(int damage, IntensityTable.Intensity intensity, float executionTime)
+    public BreakObjectCommand(IBreakable breakableObject, int damage, IntensityTable.Intensity intensity, float executionTime)
     {
+        _breakableObject = breakableObject;
         _damage = damage;
         _intensity = intensity;
         _executionTime = executionTime;
+        Queue();
     }
 
     public float ExecutionTime => _executionTime;
