@@ -146,7 +146,7 @@ public class GameManager : Singleton<GameManager>
             Debug.Log("Beginning " + SelectionManager.Instance.SelectedActor.name + "'s turn");
             yield return new WaitForSeconds(.5f);
             currentActionNode.Value.Execute();
-            if (currentActionNode.Value.ToString() == "ActorMovementCommand")
+            if (currentActionNode.Value.ToString().Equals("ActorMovementCommand"))
             {
                 yield return new WaitUntil(SelectionManager.Instance.SelectedActor.MovementComplete);
             }

@@ -1,13 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class Client : Actor, ISaveable
 {
     int _perilCountdown;
     bool _imperiled = true;
-    Rigidbody _rigidbody;
+    //Rigidbody _rigidbody;
+    Collider _collider;
 
+    enum PerilCondition
+    {
+        Pinned,
+        Clinging,
+        Disabled,
+        SeekingSafety
+    }
+
+    PerilCondition _perilStatus = PerilCondition.SeekingSafety;
 
     public int PerilCountdown => _perilCountdown;
 
@@ -17,20 +28,46 @@ public class Client : Actor, ISaveable
     {
         base.Start();
         GameManager.OnTurnEnd += ProcessPeril;
-        _rigidbody = GetComponent<Rigidbody>();
-        if (_rigidbody == null)
+        //_rigidbody = GetComponent<Rigidbody>();
+        //if (_rigidbody == null)
+        //{
+        //    Debug.LogError("Rigidbody component is null!");
+        //}
+        _collider = GetComponent<Collider>();
+        if (_collider == null)
         {
-            Debug.LogError("Rigidbody component is null!");
+            Debug.LogError("Collider component is null!");
         }
     }
 
     private void Update()
     {
-        //raycast (global)up to detect movable objects
-        //if movable object is above me, peril status is "pinned"
-        //raycast (global)down to detect if grounded
-        //if not grounded, peril status is "clinging"
-        //if not pinned and not clinging, peril status is seeking safety
+        Debug.DrawRay(transform.position, Vector3.up, Color.green);
+        Debug.DrawRay(transform.position, Vector3.down, Color.blue);
+        Debug.Log(this.name + " " + _perilStatus);
+        RaycastHit hitInfo;
+        if (Physics.Raycast(transform.position, Vector3.up, out hitInfo, 1f))
+        {
+            IMovable movableObject = hitInfo.transform.GetComponent<IMovable>();
+            if (movableObject != null)
+            {
+                movableObject.IsPinning = true;
+                _perilStatus = PerilCondition.Pinned;
+                //move target prone and disable navmesh agent
+            }
+            return;
+        }
+        if (!Physics.Raycast(transform.position, Vector3.down, out hitInfo, 1f))
+        {
+            _perilStatus = PerilCondition.Clinging;
+            return;
+        }
+        //if health is less than half
+        //peril status = "Disabled"
+
+        _perilStatus = PerilCondition.SeekingSafety;
+
+        //if seeking safety, stand upright, enable navmesh agent
     }
 
 

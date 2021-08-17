@@ -14,6 +14,8 @@ public class MovableObject : MonoBehaviour, IMovable
     Vector3 _previousPosition;
     Quaternion _previousRotation;
 
+    public bool IsPinning { get; set; } //use this to alter the color of the object when highlighted or selected
+
     private void Start()
     {
         _rigidbody = GetComponent<Rigidbody>();

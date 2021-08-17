@@ -6,5 +6,6 @@ using UnityEngine;
 public interface IMovable
 {
     void ExecuteMove(int height, Hero hero);
-    public void UndoMove();
+    void UndoMove();
+    bool IsPinning { get; set; }
 }
