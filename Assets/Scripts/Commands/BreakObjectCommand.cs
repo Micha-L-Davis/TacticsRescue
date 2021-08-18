@@ -1,3 +1,4 @@
+using IntensityTable;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,12 +6,12 @@ using UnityEngine;
 public class BreakObjectCommand : ICommand
 {
     int _damage;
-    IntensityTable.Intensity _intensity;
+    Intensity _intensity;
     IBreakable _breakableObject;
     float _executionTime;
 
 
-    public BreakObjectCommand(IBreakable breakableObject, int damage, IntensityTable.Intensity intensity, float executionTime)
+    public BreakObjectCommand(IBreakable breakableObject, int damage, Intensity intensity, float executionTime)
     {
         _breakableObject = breakableObject;
         _damage = damage;

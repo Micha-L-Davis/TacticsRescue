@@ -1,3 +1,4 @@
+using IntensityTable;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,13 +10,13 @@ public class HeroData : ScriptableObject
     public enum HeroicOrigin { Physical,Mental };
     public HeroicOrigin heroicOrigin;
     [Header("Attributes")]
-    public IntensityTable.Intensity strength;
-    public IntensityTable.Intensity fortitude;
-    public IntensityTable.Intensity coordination;
+    public Intensity strength;
+    public Intensity fortitude;
+    public Intensity coordination;
     //public int martial;
-    public IntensityTable.Intensity awareness;
+    public Intensity awareness;
     //public int logic;
-    public IntensityTable.Intensity will;
+    public Intensity will;
 
     [Header("Derived Attributes")]
     public int maxHealth;

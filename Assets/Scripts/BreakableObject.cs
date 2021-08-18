@@ -1,17 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using IntensityTable;
 
 public class BreakableObject : MonoBehaviour, IBreakable
 {
     [SerializeField]
-    IntensityTable.Intensity _materialResistance;
+    Intensity _materialResistance;
     [SerializeField]
     int _integrity = 1;
-    public IntensityTable.Intensity MaterialResistance => _materialResistance;
+    public Intensity MaterialResistance => _materialResistance;
     public int Integrity => _integrity;
 
-    public void Damage(int amount, IntensityTable.Intensity intensity)
+    public void Damage(int amount, Intensity intensity)
     {
         if (intensity > MaterialResistance)
         {
@@ -28,7 +29,7 @@ public class BreakableObject : MonoBehaviour, IBreakable
         }
     }
 
-    public void UndoDamage(int amount, IntensityTable.Intensity intensity)
+    public void UndoDamage(int amount, Intensity intensity)
     {
         if (intensity > MaterialResistance)
         {

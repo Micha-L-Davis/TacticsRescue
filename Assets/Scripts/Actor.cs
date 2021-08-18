@@ -5,6 +5,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.AI;
 using UnityEngine.InputSystem.Controls;
 using System;
+using IntensityTable;
 
 [RequireComponent(typeof(NavMeshAgent))]
 public abstract class Actor : MonoBehaviour, IBreakable
@@ -23,9 +24,9 @@ public abstract class Actor : MonoBehaviour, IBreakable
     [SerializeField]
     int _health;
     [SerializeField]
-    IntensityTable.Intensity _bodyResistance = IntensityTable.Intensity.Average;
+    Intensity _bodyResistance = Intensity.Average;
     public int Integrity => _health;
-    public IntensityTable.Intensity MaterialResistance => _bodyResistance;
+    public Intensity MaterialResistance => _bodyResistance;
 
     protected virtual void Start()
     {
@@ -71,7 +72,7 @@ public abstract class Actor : MonoBehaviour, IBreakable
         float distance = Vector3.Distance(transform.position, _destination);
         return distance <= 1.4f;
     }
-    public void Damage(int amount, IntensityTable.Intensity intensity)
+    public void Damage(int amount, Intensity intensity)
     {
         if (intensity > _bodyResistance)
         {
@@ -84,7 +85,7 @@ public abstract class Actor : MonoBehaviour, IBreakable
         }
     }
 
-    public void UndoDamage(int amount, IntensityTable.Intensity intensity)
+    public void UndoDamage(int amount, Intensity intensity)
     {
         if (intensity > _bodyResistance)
         {

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class IntensityTable
+namespace IntensityTable
 {
     public enum Intensity
     {

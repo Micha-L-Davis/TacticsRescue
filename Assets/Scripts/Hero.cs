@@ -1,3 +1,4 @@
+using IntensityTable;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -22,7 +23,7 @@ public class Hero : Actor
             return _heroData.heroName;
         }
     }
-    public IntensityTable.Intensity Strength
+    public Intensity Strength
     {
         get
         {
@@ -34,7 +35,7 @@ public class Hero : Actor
             _heroData.strength = value;
         }
     }
-    public IntensityTable.Intensity Fortitude
+    public Intensity Fortitude
     {
         get
         {
@@ -46,7 +47,7 @@ public class Hero : Actor
             _heroData.fortitude = value;
         }
     }
-    public IntensityTable.Intensity Coordination
+    public Intensity Coordination
     {
         get
         {
@@ -58,7 +59,7 @@ public class Hero : Actor
             _heroData.coordination = value;
         }
     }
-    public IntensityTable.Intensity Awareness
+    public Intensity Awareness
     {
         get
         {
@@ -71,7 +72,7 @@ public class Hero : Actor
             InitiativeBonus = Mathf.FloorToInt((int)Awareness / 10);
         }
     }
-    public IntensityTable.Intensity Will
+    public Intensity Will
     {
         get
         {
