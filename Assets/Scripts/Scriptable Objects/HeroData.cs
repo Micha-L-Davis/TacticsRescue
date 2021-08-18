@@ -20,9 +20,15 @@ public class HeroData : ScriptableObject
 
     [Header("Derived Attributes")]
     public int maxHealth;
-    public int currentHealth;
     public int experience;
     public int initiativeBonus;
 
-    
+    public void SetMaxHealth()
+    {
+        maxHealth = (int)strength + (int)fortitude + (int)coordination;
+    }
+    public void SetInitiativeBonus()
+    {
+        initiativeBonus = Mathf.FloorToInt((int)awareness / 10);
+    }
 }

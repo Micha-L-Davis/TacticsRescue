@@ -85,18 +85,6 @@ public class Hero : Actor
         }
     }
 
-    public int Health
-    {
-        get
-        {
-            return _heroData.currentHealth;
-        }
-
-        private set
-        {
-            _heroData.currentHealth = value;
-        }
-    }
     public int InitiativeBonus
     {
         get
@@ -143,14 +131,16 @@ public class Hero : Actor
         {
             Debug.Log(this.name + " " + feat.FeatActionType + " action logged.");
         }
+
     }
 
 
 
     private void Awake()
     {
-        Health = _heroData.maxHealth;
-        InitiativeBonus = Mathf.FloorToInt((int)Awareness / 10);
+        _heroData.SetMaxHealth();
+        _heroData.SetInitiativeBonus();
+        _health = _heroData.maxHealth;
     }
 
     public override int RollInitiative()

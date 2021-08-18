@@ -1,3 +1,4 @@
+using IntensityTable;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,6 +9,13 @@ public class Client : Actor, ISaveable
     int _perilCountdown;
     bool _imperiled = true;
 
+    Intensity _strength = Intensity.Average;
+    Intensity _fortitude = Intensity.Average;
+    Intensity _coordination = Intensity.Average;
+    Intensity _awareness = Intensity.Average;
+    Intensity _will = Intensity.Average;
+    int _maxHealth;
+
     enum PerilCondition
     {
         Pinned,
@@ -17,6 +25,7 @@ public class Client : Actor, ISaveable
     }
     [SerializeField]
     PerilCondition _perilStatus = PerilCondition.SeekingSafety;
+    IMovable _pinnedBy;
 
     public int PerilCountdown => _perilCountdown;
 
@@ -28,6 +37,8 @@ public class Client : Actor, ISaveable
     {
         base.Start();
         GameManager.OnTurnEnd += ProcessPeril;
+        _maxHealth = (int)_strength + (int)_fortitude + (int)_coordination;
+        _health = _maxHealth;
     }
 
     private void Update()
@@ -41,6 +52,7 @@ public class Client : Actor, ISaveable
             IMovable movableObject = hitInfo.transform.GetComponent<IMovable>();
             if (movableObject != null)
             {
+                _pinnedBy = movableObject;
                 movableObject.IsPinning = true;
                 _perilStatus = PerilCondition.Pinned;
                 //move target prone and disable navmesh agent
@@ -52,8 +64,11 @@ public class Client : Actor, ISaveable
             _perilStatus = PerilCondition.Clinging;
             return;
         }
-        //if health is less than half
-        //peril status = "Disabled"
+        if (_health < _maxHealth/2)
+        {
+            _perilStatus = PerilCondition.Disabled;
+            return;
+        }
 
         _perilStatus = PerilCondition.SeekingSafety;
 
@@ -91,15 +106,128 @@ public class Client : Actor, ISaveable
 
     public void AIDeclareAction()
     {
-        //switch on peril status
-        //Pinned:
-            //if strength greater than (lift intensity - 2), try to lift
-            //else panic
-        //Clinging:
-            //check endurance, low: perilCountdown-2, panic | mid: perilCountdown-1, panic | high: if strength greater than climb intensity-2, try to climb 
-        //Seeking Safety
-            //check will, low: Loot | mid: panic | high: take other action
-            //check awareness, low: panic | mid: move to safety | high: if saveable object nearby, move toward or attempt to save
+        Outcome outcome;
+        switch (_perilStatus)
+        {
+            case PerilCondition.Pinned:
+                if (_strength > (_pinnedBy.LiftIntensity - 2))
+                {
+                    outcome = Dice.Roll(_strength);
+                    switch (outcome)
+                    {
+                        case Outcome.Fail:
+                            Debug.Log(name + " tried to lift the pinning object, but failed.");
+                            break;
+                        case Outcome.Low:
+                            //lift the block
+                            //set bool for carrying block
+                            //set a bool for drop next turn
+                            Debug.Log(name + " lifted the pinning object, but will drop it next turn.");
+                            break;
+                        case Outcome.Medium:
+                            //lift the block
+                            //set bool for carrying block
+                            Debug.Log(name + " lifted the pinning object.");
+                            break;
+                        case Outcome.High:
+                            //lift the block
+                            //set bool for carrying block
+                            //add one to peril countdown
+                            Debug.Log(name + " lifted the pinning object easily.");
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                else
+                {
+                    Panic();
+                }
+                break;
+            case PerilCondition.Clinging:
+                outcome = Dice.Roll(_fortitude);
+                switch (outcome)
+                {
+                    case Outcome.Fail:
+                        _perilCountdown -= 2;
+                        Panic();
+                        break;
+                    case Outcome.Low:
+                        _perilCountdown--;
+                        Panic();
+                        break;
+                    case Outcome.Medium:
+                        Panic();
+                        break;
+                    case Outcome.High:
+                        //try to climb
+                        break;
+                    default:
+                        break;
+                } 
+                break;
+            case PerilCondition.Disabled:
+                Panic();
+                break;
+            case PerilCondition.SeekingSafety:
+                //if carrying block and drop next turn
+                //drop block
+                //return
+
+                //if carrying block and !drop next turn
+                //move a few squares
+                //set bool for drop next turn
+                //return
+
+                //check will, low: Loot | mid: panic | high: take other action
+                outcome = Dice.Roll(_will);
+                switch (outcome)
+                {
+                    case Outcome.Fail:
+                        //move into danger
+                        break;
+                    case Outcome.Low:
+                        //loot
+                        break;
+                    case Outcome.Medium:
+                        Panic();
+                        break;
+                    case Outcome.High:
+                        //take other action
+                        Outcome o = Dice.Roll(_awareness);
+                        switch (o)
+                        {
+                            case Outcome.Fail:
+                                Panic();
+                                break;
+                            case Outcome.Low:
+                                //move cautiously toward safety
+                                break;
+                            case Outcome.Medium:
+                                //move swiftly toward safety
+                                break;
+                            case Outcome.High:
+                                //if saveable object nearby
+                                //if out of move range, move toward
+                                //else attempt a save action
+                                break;
+                            default:
+                                break;
+                        }
+                        break;
+                    default:
+                        break;
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void Panic()
+    {
+        Debug.Log("Client " + name + " chooses to panic!");
+        GameManager.Instance.AddCommand(new PanicCommand(this, .5f));
     }
 
     public override int RollInitiative()

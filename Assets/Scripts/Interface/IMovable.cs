@@ -1,3 +1,4 @@
+using IntensityTable;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,4 +9,5 @@ public interface IMovable
     void ExecuteMove(int height, Hero hero);
     void UndoMove();
     bool IsPinning { get; set; }
+    Intensity LiftIntensity { get; }
 }

@@ -21,8 +21,7 @@ public abstract class Actor : MonoBehaviour, IBreakable
     public Hero hero;
     public Client client;
     public bool IsHero { get; private set; }
-    [SerializeField]
-    int _health;
+    protected int _health;
     [SerializeField]
     Intensity _bodyResistance = Intensity.Average;
     public int Integrity => _health;

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using IntensityTable;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
@@ -13,8 +14,12 @@ public class MovableObject : MonoBehaviour, IMovable
     bool _isCarried;
     Vector3 _previousPosition;
     Quaternion _previousRotation;
+    [SerializeField]
+    Intensity _liftIntensity;
 
     public bool IsPinning { get; set; } //use this to alter the color of the object when highlighted or selected
+
+    public Intensity LiftIntensity => _liftIntensity;
 
     private void Start()
     {

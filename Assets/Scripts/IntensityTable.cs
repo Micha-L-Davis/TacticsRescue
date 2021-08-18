@@ -32,7 +32,7 @@ namespace IntensityTable
     }
     public class Dice
     {
-        public Outcome Roll(Intensity intensity)
+        public static Outcome Roll(Intensity intensity)
         {
             int roll = Random.Range(1, 101);
             Debug.Log( "Action Roll: " + roll);
@@ -129,6 +129,7 @@ namespace IntensityTable
                 default:
                     break;
             }
+            Debug.Log("Outcome: " + outcome);
             return outcome;
         }
     }
