@@ -1,3 +1,4 @@
+using IntensityTable;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -120,7 +121,8 @@ public class SelectionManager : Singleton<SelectionManager>
                             else
                             {
                                 Debug.Log("Creating new move object command");
-                                _command = new MoveObjectCommand(movable, 2, (Hero)SelectedActor, 1);
+                                Outcome outcome = Dice.Roll(SelectedActor.hero.Will);//fix this later
+                                _command = new MoveObjectCommand(movable, outcome, 2, (Hero)SelectedActor, 1);
                             }
 
                             break;

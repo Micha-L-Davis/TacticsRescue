@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using IntensityTable;
 using UnityEngine;
 
 public class ActorMovementCommand : ICommand
@@ -15,6 +16,8 @@ public class ActorMovementCommand : ICommand
     }
 
     public float ExecutionTime => throw new System.NotImplementedException();
+
+    public Outcome ActionOutcome => throw new System.NotImplementedException();
 
     public void Execute()
     {

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using IntensityTable;
 using UnityEngine;
 
 public class PanicCommand : ICommand
@@ -14,6 +15,8 @@ public class PanicCommand : ICommand
     }
 
     public float ExecutionTime => _executionTime;
+
+    public Outcome ActionOutcome => throw new System.NotImplementedException();
 
     public void Execute()
     {

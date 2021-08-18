@@ -9,6 +9,7 @@ public class BreakObjectCommand : ICommand
     Intensity _intensity;
     IBreakable _breakableObject;
     float _executionTime;
+    Outcome _outcome;
 
 
     public BreakObjectCommand(IBreakable breakableObject, int damage, Intensity intensity, float executionTime)
@@ -22,8 +23,11 @@ public class BreakObjectCommand : ICommand
 
     public float ExecutionTime => _executionTime;
 
+    public Outcome ActionOutcome => _outcome;
+
     public void Execute()
     {
+        //add degreess of success based on outcome
         _breakableObject.Damage(_damage, _intensity);
     }
 
