@@ -150,4 +150,22 @@ public class Hero : Actor
         Debug.Log(HeroName + " rolls a " + roll + " for initiative.");
         return roll;
     }
+
+    private void AttemptAction(Intensity attribute, ICommand action)
+    {
+        Outcome outcome = Dice.Roll(attribute);
+        switch (outcome)
+        {
+            case Outcome.Fail:
+                break;
+            case Outcome.Low:
+                break;
+            case Outcome.Medium:
+                break;
+            case Outcome.High:
+                break;
+            default:
+                break;
+        }
+    }
 }

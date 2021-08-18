@@ -16,6 +16,9 @@ public class Client : Actor, ISaveable
     Intensity _will = Intensity.Average;
     int _maxHealth;
 
+    bool _carryingBlock;
+    bool _dropBlockNextTurn;
+
     enum PerilCondition
     {
         Pinned,
@@ -43,6 +46,11 @@ public class Client : Actor, ISaveable
 
     private void Update()
     {
+        UpdatePerilStatus();
+    }
+
+    private void UpdatePerilStatus()
+    {
         //Debug.DrawRay(transform.position, Vector3.up, Color.green);
         //Debug.DrawRay(transform.position, Vector3.down, Color.blue);
         //Debug.Log(this.name + " " + _perilStatus);
@@ -64,7 +72,7 @@ public class Client : Actor, ISaveable
             _perilStatus = PerilCondition.Clinging;
             return;
         }
-        if (_health < _maxHealth/2)
+        if (_health < _maxHealth / 2)
         {
             _perilStatus = PerilCondition.Disabled;
             return;
@@ -74,7 +82,6 @@ public class Client : Actor, ISaveable
 
         //if seeking safety, stand upright, enable navmesh agent
     }
-
 
     public void Rescue()
     {
@@ -119,20 +126,20 @@ public class Client : Actor, ISaveable
                             Debug.Log(name + " tried to lift the pinning object, but failed.");
                             break;
                         case Outcome.Low:
-                            //lift the block
-                            //set bool for carrying block
-                            //set a bool for drop next turn
+                            MovePinningBlock();
+                            _carryingBlock = true;
+                            _dropBlockNextTurn = true;
                             Debug.Log(name + " lifted the pinning object, but will drop it next turn.");
                             break;
                         case Outcome.Medium:
-                            //lift the block
-                            //set bool for carrying block
+                            MovePinningBlock();
+                            _carryingBlock = true;
                             Debug.Log(name + " lifted the pinning object.");
                             break;
                         case Outcome.High:
-                            //lift the block
-                            //set bool for carrying block
-                            //add one to peril countdown
+                            MovePinningBlock();
+                            _carryingBlock = true;
+                            _perilCountdown++;
                             Debug.Log(name + " lifted the pinning object easily.");
                             break;
                         default:
@@ -161,6 +168,8 @@ public class Client : Actor, ISaveable
                         break;
                     case Outcome.High:
                         //try to climb
+                        Debug.Log("Attempting to climb up");
+                        //add one to peril countdown
                         break;
                     default:
                         break;
@@ -171,13 +180,20 @@ public class Client : Actor, ISaveable
                 break;
             case PerilCondition.SeekingSafety:
                 //if carrying block and drop next turn
+                if (_carryingBlock && _dropBlockNextTurn)
+                {
+                    MovePinningBlock();
+                    _carryingBlock = false;
+                    return;
+                }
                 //drop block
                 //return
-
-                //if carrying block and !drop next turn
-                //move a few squares
-                //set bool for drop next turn
-                //return
+                if (_carryingBlock && !_dropBlockNextTurn)
+                {
+                    //move a few squares
+                    _dropBlockNextTurn = true;
+                    return;
+                }
 
                 //check will, low: Loot | mid: panic | high: take other action
                 outcome = Dice.Roll(_will);
@@ -228,6 +244,11 @@ public class Client : Actor, ISaveable
     {
         Debug.Log("Client " + name + " chooses to panic!");
         GameManager.Instance.AddCommand(new PanicCommand(this, .5f));
+    }
+
+    private void MovePinningBlock()
+    {
+        _pinnedBy.ExecuteMove(2, this);
     }
 
     public override int RollInitiative()

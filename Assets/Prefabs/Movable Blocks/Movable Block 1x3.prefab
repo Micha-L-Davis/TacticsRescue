@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 6391942291285996113}
   - component: {fileID: 6391942291285996124}
   - component: {fileID: 6391942291285996127}
+  - component: {fileID: 1895352288}
   m_Layer: 0
   m_Name: Movable Block 1x3
   m_TagString: Untagged
@@ -360,3 +361,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e28bc3424017c76468b87a5b62f79387, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _liftIntensity: 20
+--- !u!114 &1895352288
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6391942291285996119}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 638c7334052f8cf409f47f56c2d0db82, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _materialResistance: 6
+  _integrity: 10

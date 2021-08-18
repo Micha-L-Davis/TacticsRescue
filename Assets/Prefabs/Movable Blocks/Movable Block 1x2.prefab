@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 3849821149994280492}
   - component: {fileID: 3849821149994280503}
   - component: {fileID: 3849821149994280502}
+  - component: {fileID: 10608934}
   m_Layer: 0
   m_Name: Movable Block 1x2
   m_TagString: Untagged
@@ -328,7 +329,7 @@ Rigidbody:
   m_Drag: 0
   m_AngularDrag: 0.05
   m_UseGravity: 1
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
@@ -360,3 +361,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e28bc3424017c76468b87a5b62f79387, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _liftIntensity: 10
+--- !u!114 &10608934
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3849821149994280494}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 638c7334052f8cf409f47f56c2d0db82, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _materialResistance: 6
+  _integrity: 10

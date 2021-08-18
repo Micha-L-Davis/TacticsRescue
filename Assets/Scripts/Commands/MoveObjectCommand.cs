@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using IntensityTable;
 using UnityEngine;
 
 public class MoveObjectCommand : ICommand
@@ -8,22 +9,49 @@ public class MoveObjectCommand : ICommand
     int _height;
     Hero _hero;
     float _executionTime;
+    Outcome _outcome;
 
     public float ExecutionTime => _executionTime;
 
-    public MoveObjectCommand(IMovable movableObject, int height, Hero hero, float executionTime)
+    public Outcome ActionOutcome => _outcome;
+
+    public MoveObjectCommand(IMovable movableObject, Outcome outcome, int height, Hero hero, float executionTime)
     {
         _movableObject = movableObject;
         _height = height;
         _hero = hero;
         _executionTime = executionTime;
+        _outcome = outcome;
         Queue();
     }
 
 
     public void Execute()
     {
-        _movableObject.ExecuteMove(_height, _hero);
+        if (!_movableObject.IsCarried)
+        {
+            switch (_outcome)
+            {
+                case Outcome.Fail:
+                    Debug.Log("Failed to lift object!");
+                    break;
+                case Outcome.Low:
+                    _movableObject.ExecuteMove(_height, _hero);
+                    break;
+                case Outcome.Medium:
+                    _movableObject.ExecuteMove(_height, _hero);
+                    break;
+                case Outcome.High:
+                    _movableObject.ExecuteMove(_height, _hero);
+                    break;
+                default:
+                    break;
+            }
+        }
+        else
+        {
+            _movableObject.ExecuteMove(_height, _hero);
+        }
     }
 
     public void Queue()

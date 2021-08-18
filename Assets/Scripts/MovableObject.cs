@@ -20,6 +20,7 @@ public class MovableObject : MonoBehaviour, IMovable
     public bool IsPinning { get; set; } //use this to alter the color of the object when highlighted or selected
 
     public Intensity LiftIntensity => _liftIntensity;
+    public bool IsCarried => _isCarried;
 
     private void Start()
     {
@@ -40,7 +41,7 @@ public class MovableObject : MonoBehaviour, IMovable
         }
     }
 
-    public void ExecuteMove(int height, Hero hero)
+    public void ExecuteMove(int height, Actor actor)
     {
         _previousPosition = transform.position;
         _previousRotation = transform.rotation;
@@ -50,7 +51,7 @@ public class MovableObject : MonoBehaviour, IMovable
             _rigidbody.isKinematic = true;
             _height = new Vector3(transform.position.x, Mathf.RoundToInt(transform.position.y + height), transform.position.z);
             _isLifting = true;
-            transform.parent = hero.transform;
+            transform.parent = actor.transform;
         }
         else if(_isCarried)
         {

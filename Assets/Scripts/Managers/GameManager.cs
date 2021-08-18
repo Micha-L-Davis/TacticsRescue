@@ -113,9 +113,10 @@ public class GameManager : Singleton<GameManager>
                 _actionCount = 1; //probably permanent magic number
                 //AI decisions will run from here--for now all clients do is cower.
                 yield return new WaitForSeconds(1.5f);
-                Debug.Log("Client " + actor.name + " chooses to panic!");
-                Feat feat = new Feat(0, Feat.ActionType.Panic);
-                _commandBuffer.AddLast(new PanicCommand(SelectionManager.Instance.SelectedActor, .5f));
+                actor.client.AIDeclareAction();
+                //Debug.Log("Client " + actor.name + " chooses to panic!");
+                //Feat feat = new Feat(0, Feat.ActionType.Panic);
+                //_commandBuffer.AddLast(new PanicCommand(SelectionManager.Instance.SelectedActor, .5f));
             }
             //Add commands for this turn to Round.First
             _roundBuffer.AddFirst(_commandBuffer);
