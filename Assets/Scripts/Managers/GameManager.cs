@@ -19,12 +19,26 @@ public class GameManager : Singleton<GameManager>
     [SerializeField]
     int _currentRound;
     public int CurrentRound { get; }
-    List<Actor> _actors = new List<Actor>();
+    [SerializeField]
+    ActorRuntimeSet _actorRuntimeSet;
+
+    List<Actor> Actors
+    {
+        get
+        {
+            return _actorRuntimeSet.Items;
+        }
+    }
+
     public bool PlayerTurn { get; private set; }
     LinkedList<ICommand> _thisTurn;
     int _actionCount = 1;
     LinkedList<LinkedList<ICommand>> _roundBuffer = new LinkedList<LinkedList<ICommand>>();
     private LinkedList<ICommand> _commandBuffer = new LinkedList<ICommand>();
+
+    
+
+
 
     public void AddCommand(ICommand command)
     {
@@ -34,25 +48,25 @@ public class GameManager : Singleton<GameManager>
 
     private void Start()
     {
-        RallyActors();
+        
         StartCoroutine(RoundRoutine());
     }
 
-    void RallyActors()
-    {
-        GameObject[] rallyCall = GameObject.FindGameObjectsWithTag("Actor");
-        foreach (var go in rallyCall)
-        {
-            Actor actor = go.GetComponent<Actor>();
-            if (actor == null)
-            {
-                Debug.LogError("GameObject " + go.name + " is missing its actor component, or has been improperly assigned an Actor tag");
-            }
-            _actors.Add(actor);
-        }
+    //void RallyActors()
+    //{
+    //    GameObject[] rallyCall = GameObject.FindGameObjectsWithTag("Actor");
+    //    foreach (var go in rallyCall)
+    //    {
+    //        Actor actor = go.GetComponent<Actor>();
+    //        if (actor == null)
+    //        {
+    //            Debug.LogError("GameObject " + go.name + " is missing its actor component, or has been improperly assigned an Actor tag");
+    //        }
+    //        _actors.Add(actor);
+    //    }
 
-        Debug.Log(_actors.Count + " actors rallied.");
-    }
+    //    Debug.Log(_actors.Count + " actors rallied.");
+    //}
 
     IEnumerator RoundRoutine()
     {
@@ -92,7 +106,7 @@ public class GameManager : Singleton<GameManager>
 
     IEnumerator DeclareActions()
     {
-        for (int i = 0; i < _actors.Count; i++)
+        for (int i = 0; i < Actors.Count; i++)
         {
             _commandBuffer = new LinkedList<ICommand>();
             //select the last initiative member

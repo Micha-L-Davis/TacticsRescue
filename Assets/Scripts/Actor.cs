@@ -11,6 +11,8 @@ using IntensityTable;
 public abstract class Actor : MonoBehaviour, IBreakable
 {
     [SerializeField]
+    ActorRuntimeSet _actorRuntimeSet;
+    [SerializeField]
     Camera _camera;
     protected Vector3 _destination;
     protected Vector3 _previousPosition;
@@ -26,6 +28,7 @@ public abstract class Actor : MonoBehaviour, IBreakable
     Intensity _bodyResistance = Intensity.Average;
     public int Integrity => _health;
     public Intensity MaterialResistance => _bodyResistance;
+    
 
     protected virtual void Start()
     {
@@ -100,5 +103,14 @@ public abstract class Actor : MonoBehaviour, IBreakable
             _agent.enabled = false;
             transform.SetPositionAndRotation(new Vector3(transform.position.x, 1f + _collider.radius, transform.position.z),Quaternion.Euler(90, 0, 0));
         }
+    }
+
+    private void OnEnable()
+    {
+        _actorRuntimeSet.Add(this.gameObject.GetComponent<Actor>());
+    }
+    private void OnDisable()
+    {
+        _actorRuntimeSet.Remove(this.gameObject.GetComponent<Actor>());
     }
 }
