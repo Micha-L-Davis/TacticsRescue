@@ -5,17 +5,12 @@ using UnityEngine;
 
 public class Hero : Actor
 {
-    List<Feat> _feats;
-    Feat _move;
-    Feat _break;
-    Feat _save;
+    //List<Feat> _feats = new List<Feat>();
+
 
     [SerializeField]
     HeroData _heroData;
-    
-    public Feat Move => _move;
-    public Feat Break => _break;
-    public Feat Save => _save;
+
     public string HeroName
     {
         get
@@ -120,16 +115,16 @@ public class Hero : Actor
 
         //mental character type constructors
         //get these tied to attributes rather than magic numbers
-        _feats = new List<Feat>();
-        _move = new Feat(3.51f, Feat.ActionType.MoveObject);
-        _feats.Add(_move);
-        _break = new Feat(6.51f, Feat.ActionType.BreakObject);
-        _feats.Add(_break);
-        _save = new Feat(1.51f, Feat.ActionType.SaveClient);
-        _feats.Add(_save);
+        //_feats = new List<Feat>();
+        //_move = new Feat(3.51f, Feat.ActionType.MoveObject);
+        //_feats.Add(_move);
+        //_break = new Feat(6.51f, Feat.ActionType.BreakObject);
+        //_feats.Add(_break);
+        //_save = new Feat(1.51f, Feat.ActionType.SaveClient);
+        //_feats.Add(_save);
         foreach (var feat in _feats)
         {
-            Debug.Log(this.name + " " + feat.FeatActionType + " action logged.");
+            Debug.Log(this.name + " " + feat + " action logged.");
         }
 
     }
@@ -151,7 +146,7 @@ public class Hero : Actor
         return roll;
     }
 
-    private void AttemptAction(Intensity attribute, ICommand action)
+    private void AttemptAction(Intensity attribute, IFeat action)
     {
         Outcome outcome = Dice.Roll(attribute);
         switch (outcome)

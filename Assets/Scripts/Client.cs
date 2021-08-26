@@ -243,7 +243,7 @@ public class Client : Actor, ISaveable
     private void Panic()
     {
         Debug.Log("Client " + name + " chooses to panic!");
-        GameManager.Instance.AddCommand(new PanicCommand(this, .5f));
+        GameManager.Instance.AddCommand(new PanicFeat(this, .5f));
     }
 
     private void MovePinningBlock()

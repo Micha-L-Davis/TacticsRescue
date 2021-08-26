@@ -3,7 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BreakObjectCommand : ICommand
+[CreateAssetMenu(menuName = "Feats/Break Object")]
+public class BreakObjectFeat : Feat, IFeat
 {
     int _damage;
     Intensity _intensity;
@@ -12,7 +13,7 @@ public class BreakObjectCommand : ICommand
     Outcome _outcome;
 
 
-    public BreakObjectCommand(IBreakable breakableObject, int damage, Intensity intensity, float executionTime)
+    public BreakObjectFeat(IBreakable breakableObject, int damage, Intensity intensity, float executionTime)
     {
         _breakableObject = breakableObject;
         _damage = damage;
@@ -21,28 +22,28 @@ public class BreakObjectCommand : ICommand
         Queue();
     }
 
-    public float ExecutionTime => _executionTime;
+    public override float ExecutionTime => _executionTime;
 
-    public Outcome ActionOutcome => _outcome;
+    public override Outcome ActionOutcome => _outcome;
 
-    public void Execute()
+    public override void Execute()
     {
         //add degreess of success based on outcome
         _breakableObject.Damage(_damage, _intensity);
     }
 
-    public void Queue()
+    public override void Queue()
     {
         GameManager.Instance.AddCommand(this);
         Debug.Log("Queueing Break Object Command");
     }
 
-    public void Undo()
+    public override void Undo()
     {
         _breakableObject.UndoDamage(_damage, _intensity);
     }
 
-    public void UnQueue()
+    public override void UnQueue()
     {
         //remove from queue
     }

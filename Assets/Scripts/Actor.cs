@@ -28,7 +28,9 @@ public abstract class Actor : MonoBehaviour, IBreakable
     Intensity _bodyResistance = Intensity.Average;
     public int Integrity => _health;
     public Intensity MaterialResistance => _bodyResistance;
-    
+    [SerializeField]
+    protected List<Feat> _feats = new List<Feat>();
+    public List<Feat> Feats => _feats;
 
     protected virtual void Start()
     {

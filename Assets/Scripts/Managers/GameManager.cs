@@ -42,16 +42,16 @@ public class GameManager : Singleton<GameManager>
     }
 
     public bool PlayerTurn { get; private set; }
-    LinkedList<ICommand> _thisTurn;
+    LinkedList<IFeat> _thisTurn;
     int _actionCount = 1;
-    LinkedList<LinkedList<ICommand>> _roundBuffer = new LinkedList<LinkedList<ICommand>>();
-    private LinkedList<ICommand> _commandBuffer = new LinkedList<ICommand>();
+    LinkedList<LinkedList<IFeat>> _roundBuffer = new LinkedList<LinkedList<IFeat>>();
+    private LinkedList<IFeat> _commandBuffer = new LinkedList<IFeat>();
 
     
 
 
 
-    public void AddCommand(ICommand command)
+    public void AddCommand(IFeat command)
     {
         _commandBuffer.AddLast(command);
         Debug.Log("Command queued, " + _commandBuffer.Count + " commands in turn buffer");
@@ -119,7 +119,7 @@ public class GameManager : Singleton<GameManager>
     {
         for (int i = 0; i < Actors.Count; i++)
         {
-            _commandBuffer = new LinkedList<ICommand>();
+            _commandBuffer = new LinkedList<IFeat>();
             //select the last initiative member
             SelectionManager.Instance.SelectActor(_initiativeOrder.Last.Value.Key);
             Actor actor = SelectionManager.Instance.SelectedActor;
@@ -161,9 +161,9 @@ public class GameManager : Singleton<GameManager>
     IEnumerator ProcessRound()
     {
         Debug.Log(_roundBuffer.Count + " turns in queue");
-        LinkedListNode<LinkedList<ICommand>> currentTurnNode = _roundBuffer.First;
+        LinkedListNode<LinkedList<IFeat>> currentTurnNode = _roundBuffer.First;
         Debug.Log("Current turn loaded. " + currentTurnNode.Value.Count + " actions queued");
-        LinkedListNode<ICommand> currentActionNode = currentTurnNode.Value.First;
+        LinkedListNode<IFeat> currentActionNode = currentTurnNode.Value.First;
         Debug.Log("Current action loaded: " + currentActionNode.Value.ToString());
         SelectionManager.Instance.SelectActor(_initiativeOrder.First.Value.Key);
 

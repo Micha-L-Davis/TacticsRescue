@@ -3,39 +3,40 @@ using System.Collections.Generic;
 using IntensityTable;
 using UnityEngine;
 
-public class ActorMovementCommand : ICommand
+[CreateAssetMenu(menuName = "Feats/Actor Movement")]
+public class ActorMovementFeat : Feat, IFeat
 {
     Actor _actor;
     Vector3 _destination;
 
-    public ActorMovementCommand(Actor actor, Vector3 destination)
+    public ActorMovementFeat(Actor actor, Vector3 destination)
     {
         _actor = actor;
         _destination = destination;
         Queue();
     }
 
-    public float ExecutionTime => throw new System.NotImplementedException();
+    public override float ExecutionTime => throw new System.NotImplementedException();
 
-    public Outcome ActionOutcome => throw new System.NotImplementedException();
+    public override Outcome ActionOutcome => throw new System.NotImplementedException();
 
-    public void Execute()
+    public override void Execute()
     {
         _actor.ExecuteMovement(_destination);
     }
 
-    public void Queue()
+    public override void Queue()
     {
         GameManager.Instance.AddCommand(this);
         Debug.Log("Queueing Actor Movement Command");
     }
 
-    public void Undo()
+    public override void Undo()
     {
         _actor.UndoMovement();
     }
 
-    public void UnQueue()
+    public override void UnQueue()
     {
         //remove from command list
     }

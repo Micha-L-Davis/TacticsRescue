@@ -15,7 +15,7 @@ public class SelectionManager : Singleton<SelectionManager>
     EventSystem _eventSystem;
     Vector3 _destination;
     Vector3 _plannedPosition;
-    ICommand _command;
+    IFeat _command;
     public Actor SelectedActor { get; private set; }
 
     Input _input;
@@ -41,9 +41,9 @@ public class SelectionManager : Singleton<SelectionManager>
     {
         //_input.Agent.Select.performed += _ => SelectHero();
         _input.Agent.Execute.performed += _ => SelectTarget();
-        UIManager.Instance.OnMoveSelect += SelectMoveFeat;
-        UIManager.Instance.OnBreakSelect += SelectBreakFeat;
-        UIManager.Instance.OnSaveSelect += SelectSaveFeat;
+        UIManager.Instance.OnFirstFeatSelect += SelectFirstFeat;
+        UIManager.Instance.OnSecondFeatSelect += SelectSecondFeat;
+        UIManager.Instance.OnThirdFeatSelect += SelectThirdFeat;
     }
 
   
@@ -56,19 +56,19 @@ public class SelectionManager : Singleton<SelectionManager>
         //reveal UI buttons
     }
 
-    void SelectMoveFeat()
+    void SelectFirstFeat()
     {
-        _selectedFeat = SelectedActor.hero.Move;
-        Debug.Log(_selectedFeat.FeatActionType);
+        _selectedFeat = SelectedActor.hero.Feats[0];
+        Debug.Log(_selectedFeat);
     }
-    void SelectBreakFeat()
+    void SelectSecondFeat()
     {
-        _selectedFeat = SelectedActor.hero.Break;
-        Debug.Log(_selectedFeat.FeatActionType);
+        _selectedFeat = SelectedActor.hero.Feats[1];
+        Debug.Log(_selectedFeat);
     }
-    void SelectSaveFeat()
+    void SelectThirdFeat()
     {
-        _selectedFeat = SelectedActor.hero.Save;
+        _selectedFeat = SelectedActor.hero.Feats[2];
     }
 
 
@@ -93,80 +93,88 @@ public class SelectionManager : Singleton<SelectionManager>
                     float y = Mathf.RoundToInt(hitInfo.point.y);
                     float z = Mathf.RoundToInt(hitInfo.point.z);
                     _destination = new Vector3(x, y, z);
-                    _command = new ActorMovementCommand(SelectedActor, _destination);
+                    _command = new ActorMovementFeat(SelectedActor, _destination);
                     _plannedPosition = _destination;
                 }
-                else if (_selectedFeat != null && _selectedFeat.Range < distance)
+                else
                 {
-                    Debug.Log("Out of range, action failed");
-                    _selectedFeat = null;
+                    // Set the selected object and let the feats decide what to do with that info.
+
+                    // Null selected feat
                 }
-                else if (_selectedFeat != null && _selectedFeat.Range > distance)
-                {
-                    //switch on feat type 
-                    //MoveObject: construct move object command and enqueue
-                    //BreakObject: construct break object command and enqueue
-                    //SaveClient: construct save client command and enqueue
-                    //Panic: construct panic command and enqueue
-                    //Loot: construct loot command and enqueue
 
-                    switch (_selectedFeat.FeatActionType)
-                    {
-                        case Feat.ActionType.MoveObject:
-                            IMovable movable = target.GetComponent<IMovable>();
-                            if (movable == null)
-                            {
-                                Debug.Log("Cannot move immovable object");
-                            }
-                            else
-                            {
-                                Debug.Log("Creating new move object command");
-                                Outcome outcome = Dice.Roll(SelectedActor.hero.Will);//fix this later
-                                _command = new MoveObjectCommand(movable, outcome, 2, (Hero)SelectedActor, 1);
-                            }
 
-                            break;
-                        case Feat.ActionType.BreakObject:
-                            IBreakable breakable = target.GetComponent<IBreakable>();
-                            if (breakable == null)
-                            {
-                                Debug.Log("Cannot break unbreakable object");
-                            }
-                            else
-                            {
-                                Debug.Log("Creating new break object command");
-                                Hero hero = (Hero)SelectedActor;
-                                if (hero.HeroicOrigin == HeroData.HeroicOrigin.Mental)
-                                {
-                                    _command = new BreakObjectCommand(breakable, (int)hero.Will, hero.Will, 1);
-                                }
-                                else if (hero.HeroicOrigin == HeroData.HeroicOrigin.Physical)
-                                {
-                                    _command = new BreakObjectCommand(breakable, (int)hero.Strength, hero.Strength, 1);
-                                }
+                //else if (_selectedFeat != null && _selectedFeat.Range < distance)
+                //{
+                //    Debug.Log("Out of range, action failed");
+                //    _selectedFeat = null;
+                //}
+                //else if (_selectedFeat != null && _selectedFeat.Range > distance)
+                //{
+                //    //switch on feat type 
+                //    //MoveObject: construct move object command and enqueue
+                //    //BreakObject: construct break object command and enqueue
+                //    //SaveClient: construct save client command and enqueue
+                //    //Panic: construct panic command and enqueue
+                //    //Loot: construct loot command and enqueue
 
-                            }
-                            break;
-                        case Feat.ActionType.SaveClient:
-                            ISaveable saveable = target.GetComponent<ISaveable>();
-                            if (saveable == null)
-                            {
-                                Debug.Log("Cannot save unsaveable object");
-                            }
-                            else
-                            {
-                                //construct a new saveobject command
-                            }
-                            break;
-                        case Feat.ActionType.Panic:
-                            break;
-                        case Feat.ActionType.Loot:
-                            break;
-                        default:
-                            break;
-                    }
-                    _selectedFeat = null;
-                }
+                //    switch (_selectedFeat.FeatActionType)
+                //    {
+                //        case Feat.ActionType.MoveObject:
+                //            IMovable movable = target.GetComponent<IMovable>();
+                //            if (movable == null)
+                //            {
+                //                Debug.Log("Cannot move immovable object");
+                //            }
+                //            else
+                //            {
+                //                Debug.Log("Creating new move object command");
+                //                Outcome outcome = Dice.Roll(SelectedActor.hero.Will);//fix this later
+                //                _command = new MoveObjectFeat(movable, outcome, 2, (Hero)SelectedActor, 1);
+                //            }
+
+                //            break;
+                //        case Feat.ActionType.BreakObject:
+                //            IBreakable breakable = target.GetComponent<IBreakable>();
+                //            if (breakable == null)
+                //            {
+                //                Debug.Log("Cannot break unbreakable object");
+                //            }
+                //            else
+                //            {
+                //                Debug.Log("Creating new break object command");
+                //                Hero hero = (Hero)SelectedActor;
+                //                if (hero.HeroicOrigin == HeroData.HeroicOrigin.Mental)
+                //                {
+                //                    _command = new BreakObjectFeat(breakable, (int)hero.Will, hero.Will, 1);
+                //                }
+                //                else if (hero.HeroicOrigin == HeroData.HeroicOrigin.Physical)
+                //                {
+                //                    _command = new BreakObjectFeat(breakable, (int)hero.Strength, hero.Strength, 1);
+                //                }
+
+                //            }
+                //            break;
+                //        case Feat.ActionType.SaveClient:
+                //            ISaveable saveable = target.GetComponent<ISaveable>();
+                //            if (saveable == null)
+                //            {
+                //                Debug.Log("Cannot save unsaveable object");
+                //            }
+                //            else
+                //            {
+                //                //construct a new saveobject command
+                //            }
+                //            break;
+                //        case Feat.ActionType.Panic:
+                //            break;
+                //        case Feat.ActionType.Loot:
+                //            break;
+                //        default:
+                //            break;
+                //    }
+                //    _selectedFeat = null;
+                //}
             }
             _selectedFeat = null;
         }

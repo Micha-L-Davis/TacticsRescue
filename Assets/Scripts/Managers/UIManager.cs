@@ -8,9 +8,9 @@ public class UIManager : Singleton<UIManager>
 {
     protected UIManager() {}
 
-    public Action OnMoveSelect;
-    public Action OnBreakSelect;
-    public Action OnSaveSelect;
+    public Action OnFirstFeatSelect;
+    public Action OnSecondFeatSelect;
+    public Action OnThirdFeatSelect;
     [SerializeField]
     List<Image> _initiativeRoster = new List<Image>();
     [SerializeField]
@@ -47,17 +47,17 @@ public class UIManager : Singleton<UIManager>
     public void MoveFeatButton()
     {
         Debug.Log("Move button clicked");
-        OnMoveSelect?.Invoke();
+        OnFirstFeatSelect?.Invoke();
     }
 
     public void BreakFeatButton()
     {
-        OnBreakSelect?.Invoke();
+        OnSecondFeatSelect?.Invoke();
     }
 
     public void SaveFeatButton()
     {
-        OnSaveSelect?.Invoke();
+        OnThirdFeatSelect?.Invoke();
     }
 
     public void EndTurnButton()

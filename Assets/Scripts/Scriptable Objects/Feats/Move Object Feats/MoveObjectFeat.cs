@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using IntensityTable;
 using UnityEngine;
 
-public class MoveObjectCommand : ICommand
+[CreateAssetMenu(menuName = "Feats/Move Object")]
+public class MoveObjectFeat : Feat, IFeat
 {
     IMovable _movableObject;
     int _height;
@@ -11,11 +12,11 @@ public class MoveObjectCommand : ICommand
     float _executionTime;
     Outcome _outcome;
 
-    public float ExecutionTime => _executionTime;
+    public override float ExecutionTime => _executionTime;
 
-    public Outcome ActionOutcome => _outcome;
+    public override Outcome ActionOutcome => _outcome;
 
-    public MoveObjectCommand(IMovable movableObject, Outcome outcome, int height, Hero hero, float executionTime)
+    public MoveObjectFeat(IMovable movableObject, Outcome outcome, int height, Hero hero, float executionTime)
     {
         _movableObject = movableObject;
         _height = height;
@@ -26,7 +27,7 @@ public class MoveObjectCommand : ICommand
     }
 
 
-    public void Execute()
+    public override void Execute()
     {
         if (!_movableObject.IsCarried)
         {
@@ -54,18 +55,18 @@ public class MoveObjectCommand : ICommand
         }
     }
 
-    public void Queue()
+    public override void Queue()
     {
         GameManager.Instance.AddCommand(this);
         Debug.Log("Queueing Move Object Command");
     }
 
-    public void UnQueue()
+    public override void UnQueue()
     {
         //remove this from the command manager list
     }
 
-    public void Undo()
+    public override void Undo()
     {
         _movableObject.UndoMove();
     }
