@@ -10,12 +10,17 @@ public class HeroData : ScriptableObject
     public enum HeroicOrigin { Physical,Mental };
     public HeroicOrigin heroicOrigin;
     [Header("Attributes")]
+    [SearchableEnum]
     public Intensity strength;
+    [SearchableEnum]
     public Intensity fortitude;
+    [SearchableEnum]
     public Intensity coordination;
     //public int martial;
+    [SearchableEnum]
     public Intensity awareness;
     //public int logic;
+    [SearchableEnum]
     public Intensity will;
 
     [Header("Derived Attributes")]

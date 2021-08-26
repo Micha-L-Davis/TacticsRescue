@@ -1,3 +1,4 @@
+using Opertoon.Panoply;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -21,12 +22,22 @@ public class GameManager : Singleton<GameManager>
     public int CurrentRound { get; }
     [SerializeField]
     ActorRuntimeSet _actorRuntimeSet;
+    [SerializeField]
+    PanelRuntimeSet _panelRuntimeSet;
 
     List<Actor> Actors
     {
         get
         {
             return _actorRuntimeSet.Items;
+        }
+    }
+
+    List<Panel> Panels
+    {
+        get
+        {
+            return _panelRuntimeSet.Items;
         }
     }
 
