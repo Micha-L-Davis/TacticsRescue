@@ -9,6 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 83e3d4982e2c7f140ab9f8289dedeb8d, type: 3}
-  m_Name: InitiativeRuntimeSet
+  m_Script: {fileID: 11500000, guid: b646125d3a12f0943af0e021d5f036f9, type: 3}
+  m_Name: SelectedActor
   m_EditorClassIdentifier: 
+  Value: {fileID: 0}

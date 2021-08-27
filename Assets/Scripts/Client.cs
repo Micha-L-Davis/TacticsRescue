@@ -251,11 +251,11 @@ public class Client : Actor, ISaveable
         _pinnedBy.ExecuteMove(2, this);
     }
 
-    public override int RollInitiative()
+    public override void RollInitiative()
     {
         int roll = Random.Range(0, 10);
         Debug.Log(gameObject.name + " rolls a " + roll + " for initiative.");
-        return roll;
+        initiative = roll;
     }
 
     

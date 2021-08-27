@@ -9,12 +9,11 @@ public class GameManager : Singleton<GameManager>
 {
     protected GameManager() { }
 
-    public static Func<int> OnRoundStart;
+    public static Action OnRoundStart;
     public static Action OnTurnEnd;
 
     Dictionary<Actor, int> _initiativeDictionary = new Dictionary<Actor, int>();
     int _initiativeIndex;
-    [SerializeField]
     LinkedList<KeyValuePair<Actor, int>> _initiativeOrder = new LinkedList<KeyValuePair<Actor, int>>();
     public bool levelComplete;
     [SerializeField]
@@ -24,6 +23,16 @@ public class GameManager : Singleton<GameManager>
     ActorRuntimeSet _actorRuntimeSet;
     [SerializeField]
     PanelRuntimeSet _panelRuntimeSet;
+
+    [SerializeField]
+    ActorVariable _selectedActor;
+
+    private Actor SelectedActor
+    {
+        get => _selectedActor.Value;
+        set => _selectedActor.SetValue(value);
+    }
+
 
     List<Actor> Actors
     {
@@ -63,22 +72,6 @@ public class GameManager : Singleton<GameManager>
         StartCoroutine(RoundRoutine());
     }
 
-    //void RallyActors()
-    //{
-    //    GameObject[] rallyCall = GameObject.FindGameObjectsWithTag("Actor");
-    //    foreach (var go in rallyCall)
-    //    {
-    //        Actor actor = go.GetComponent<Actor>();
-    //        if (actor == null)
-    //        {
-    //            Debug.LogError("GameObject " + go.name + " is missing its actor component, or has been improperly assigned an Actor tag");
-    //        }
-    //        _actors.Add(actor);
-    //    }
-
-    //    Debug.Log(_actors.Count + " actors rallied.");
-    //}
-
     IEnumerator RoundRoutine()
     {
         while (!levelComplete)
@@ -93,12 +86,12 @@ public class GameManager : Singleton<GameManager>
         _currentRound++;
         _initiativeDictionary.Clear();
         _initiativeOrder.Clear();
-        if (OnRoundStart != null)
+        if (_actorRuntimeSet.Items != null)
         {
-            foreach (Func<int> func in OnRoundStart.GetInvocationList())
+            OnRoundStart?.Invoke();
+            foreach (Actor actor in _actorRuntimeSet.Items)
             {
-                Actor actor = (Actor)func.Target;
-                int init = func.Invoke();
+                int init = actor.initiative;
                 _initiativeDictionary.Add(actor, init);
             }
             foreach (KeyValuePair<Actor, int> actor in _initiativeDictionary.OrderBy(init => init.Value))
@@ -121,15 +114,14 @@ public class GameManager : Singleton<GameManager>
         {
             _commandBuffer = new LinkedList<IFeat>();
             //select the last initiative member
-            SelectionManager.Instance.SelectActor(_initiativeOrder.Last.Value.Key);
-            Actor actor = SelectionManager.Instance.SelectedActor;
+            SelectedActor =_initiativeOrder.Last.Value.Key;
             //if actor.IsHero
-            if (actor.IsHero)
+            if (SelectedActor.IsHero)
             {
                 _actionCount = 2; //temporary magic number
                 UIManager.Instance.ToggleCommandPanel();
                 PlayerTurn = true;
-                Debug.Log("Hero" + actor.name + " is chosing an action");
+                Debug.Log("Hero" + SelectedActor.name + " is chosing an action");
                 yield return new WaitUntil(ActionsSelected);
                 UIManager.Instance.ToggleCommandPanel();
             }
@@ -138,7 +130,7 @@ public class GameManager : Singleton<GameManager>
                 _actionCount = 1; //probably permanent magic number
                 //AI decisions will run from here--for now all clients do is cower.
                 yield return new WaitForSeconds(1.5f);
-                actor.client.AIDeclareAction();
+                SelectedActor.client.AIDeclareAction();
                 //Debug.Log("Client " + actor.name + " chooses to panic!");
                 //Feat feat = new Feat(0, Feat.ActionType.Panic);
                 //_commandBuffer.AddLast(new PanicCommand(SelectionManager.Instance.SelectedActor, .5f));

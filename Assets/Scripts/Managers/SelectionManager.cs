@@ -16,7 +16,14 @@ public class SelectionManager : Singleton<SelectionManager>
     Vector3 _destination;
     Vector3 _plannedPosition;
     IFeat _command;
-    public Actor SelectedActor { get; private set; }
+    [SerializeField]
+    ActorVariable _selectedActor;
+
+    public Actor SelectedActor
+    {
+        get => _selectedActor.Value;
+        private set => _selectedActor.SetValue(value);
+    }
 
     Input _input;
     [SerializeField]
@@ -69,6 +76,7 @@ public class SelectionManager : Singleton<SelectionManager>
     void SelectThirdFeat()
     {
         _selectedFeat = SelectedActor.hero.Feats[2];
+        Debug.Log(_selectedFeat);
     }
 
 

@@ -31,7 +31,7 @@ public abstract class Actor : MonoBehaviour, IBreakable
     [SerializeField]
     protected List<Feat> _feats = new List<Feat>();
     public List<Feat> Feats => _feats;
-
+    public int initiative;
     protected virtual void Start()
     {
         _agent = GetComponent<NavMeshAgent>();
@@ -69,7 +69,7 @@ public abstract class Actor : MonoBehaviour, IBreakable
         transform.SetPositionAndRotation(_previousPosition, _previousRotation);
     }
 
-    public abstract int RollInitiative();
+    public abstract void RollInitiative();
 
     public bool MovementComplete()
     {

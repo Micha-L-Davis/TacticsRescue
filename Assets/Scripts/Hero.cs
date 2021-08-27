@@ -93,6 +93,8 @@ public class Hero : Actor
         }
     }
 
+
+
     public HeroData.HeroicOrigin HeroicOrigin
     {
         get
@@ -138,12 +140,12 @@ public class Hero : Actor
         _health = _heroData.maxHealth;
     }
 
-    public override int RollInitiative()
+    public override void RollInitiative()
     {
         int roll = Random.Range(0, 10);
         roll += InitiativeBonus;
         Debug.Log(HeroName + " rolls a " + roll + " for initiative.");
-        return roll;
+        initiative = roll;
     }
 
     private void AttemptAction(Intensity attribute, IFeat action)
